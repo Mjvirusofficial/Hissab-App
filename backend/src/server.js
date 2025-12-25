@@ -10,6 +10,11 @@ const withoutAmountRoutes = require("./routes/withoutAmountRoutes");
 connectDB();
 const app = express();
 
+app.use(cors({
+  origin: "https://hisaab-mj.netlify.app", // Aapka naya live link
+  credentials: true 
+}));
+
 app.use(cors()); // Simple CORS for now
 app.use(express.json());
 
