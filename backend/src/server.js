@@ -16,8 +16,8 @@ const app = express();
 // Middleware
 
 app.use(cors({
-  origin: "https://hissab-frontend.onrender.com/", // Jo aapka live frontend link hai
-  credentials: true
+  origin: "https://hissab-4ggc.onrender.com", // Jo aapka live frontend link hai
+  credentials: true 
 }));
 
 app.use(cors()); // Sabhi origins allow hain (Development ke liye best)
@@ -28,7 +28,7 @@ app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use("/withoutAmount", withoutAmountRoutes);
 
-// Basic route
+// Basic route 
 app.get('/', (req, res) => {
   res.send('Expense Tracker API is running smoothly...');
 });
@@ -38,3 +38,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
