@@ -6,7 +6,10 @@ import axios from 'axios';
 
 // सुनिश्चित करें कि आपका बैकएंड URL सही है (जैसे: जहां आपका Node/Express सर्वर चल रहा है)
 
-const BACKEND_BASE_URL = 'http://localhost:5000/api/auth'; 
+// Is line ko badal dein:
+const BACKEND_BASE_URL = 'https://hissab-4ggc.onrender.com/api/auth';
+
+// const BACKEND_BASE_URL = 'http://localhost:5000/api/auth'; 
 //For all devices:-
 // const BACKEND_BASE_URL = 'http://10.52.63.205:5000/api/auth';
 
@@ -25,8 +28,10 @@ const EmailVerification = () => {
         try {
             // बैकएंड के वेरिफिकेशन रूट को GET रिक्वेस्ट भेजना
             // URL: http://localhost:5000/api/auth/verify-email/<token>
-            const response = await axios.get(`${BACKEND_BASE_URL}/verify-email/${token}`);
+            // const response = await axios.get(`${BACKEND_BASE_URL}/verify-email/${token}`);
 
+            // Axios request ko aise likhein:
+const response = await axios.get(`${BACKEND_BASE_URL}/verify-email?token=${token}`);
             if (response.data.success) {
                 setStatus('✅ सफलतापूर्वक वेरीफाई हुआ! अब आप लॉगिन कर सकते हैं।');
                 
