@@ -2,8 +2,7 @@ import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
 const API = axios.create({
-  // ✅ FIX: Backend ke naye routes se match karne ke liye /api lagaya
-  baseURL: 'https://hissab-4ggc.onrender.com/api', 
+  baseURL: 'https://hissab-4ggc.onrender.com', // Check karein iske aage /api toh nahi laga?
   headers: {
     'Content-Type': 'application/json'
   } 
