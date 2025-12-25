@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
 const API = axios.create({
-  // baseURL: 'http://localhost:5000',
-  baseURL: 'https://hissab-4ggc.onrender.com/api',
+  // Ek baar check karein ki backend link ke end mein '/' toh nahi chahiye
+  baseURL: 'https://hissab-4ggc.onrender.com/api', 
   headers: {
     'Content-Type': 'application/json'
   }

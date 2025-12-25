@@ -14,6 +14,12 @@ connectDB();
 const app = express();
 
 // Middleware
+
+app.use(cors({
+  origin: "https://hissab-frontend.onrender.com/", // Jo aapka live frontend link hai
+  credentials: true
+}));
+
 app.use(cors()); // Sabhi origins allow hain (Development ke liye best)
 app.use(express.json());
 
