@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   */
   isVerified: {
     type: Boolean,
-    default: false, // Abhi ke liye true hai taaki bina verification login ho sake
+    default: true, // Abhi ke liye true hai taaki bina verification login ho sake
   },
   // verificationToken: {
   //   type: String, // Live ke waqt isko uncomment kar dena

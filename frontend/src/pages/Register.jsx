@@ -35,9 +35,9 @@ function Register() {
         navigate("/"); // Seedha Dashboard par bhejo
 
       // 🚀 LIVE: Jab verification chalu karni ho, tab upar ki 3 lines comment karke niche wala use karein:
-        navigate("/check-email", { 
-            state: { registeredEmail: data.email } 
-        });
+        // navigate("/check-email", { 
+        //     state: { registeredEmail: data.email } 
+        // });
       
       } else {
         setError(response.message);
