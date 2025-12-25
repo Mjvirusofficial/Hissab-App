@@ -6,7 +6,7 @@ const API = axios.create({
   baseURL: 'https://hissab-4ggc.onrender.com/api', 
   headers: {
     'Content-Type': 'application/json'
-  }
+  } 
 });
 
 // Request Interceptor: Token automatically har request ke header mein jayega
