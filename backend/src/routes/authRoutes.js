@@ -13,7 +13,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // 🚀 LIVE: Jab email verification chalu karna ho, tab is niche wali line ko uncomment karein
-// router.get('/verify-email/:token', verifyEmail);
+router.get('/verify-email/:token', verifyEmail);
 
 // Protected route
 router.get('/profile', protect, getUserProfile);
