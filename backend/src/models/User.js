@@ -26,11 +26,11 @@ const userSchema = new mongoose.Schema({
   */
   isVerified: {
     type: Boolean,
-    default: FontFaceSetLoadEvent, // Abhi ke liye true hai taaki bina verification login ho sake
+    default: false, // Abhi ke liye true hai taaki bina verification login ho sake
   },
-  verificationToken: {
-    type: String, // Live ke waqt isko uncomment kar dena
-  }
+  // verificationToken: {
+  //   type: String, // Live ke waqt isko uncomment kar dena
+  // }
   /* ============================================================== */
 
 }, {
