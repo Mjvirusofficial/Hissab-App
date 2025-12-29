@@ -1,48 +1,38 @@
-// src/pages/EmailVerification.jsx
-
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// सुनिश्चित करें कि आपका बैकएंड URL सही है (जैसे: जहां आपका Node/Express सर्वर चल रहा है)
-
-// Is line ko badal dein:
+// 🌐 Config: Aapka Backend URL
 const BACKEND_BASE_URL = 'https://hissab-4ggc.onrender.com/api/auth';
 
-// const BACKEND_BASE_URL = 'http://localhost:5000/api/auth'; 
-//For all devices:-
-// const BACKEND_BASE_URL = 'http://10.52.63.205:5000/api/auth';
-
 const EmailVerification = () => {
-    // 1. स्टेट्स (States)
+    // 1. States
     const [status, setStatus] = useState('ईमेल वेरीफाई किया जा रहा है... कृपया प्रतीक्षा करें।');
     const [isLoading, setIsLoading] = useState(true);
     
-    // 2. हुक्स (Hooks)
-    const location = useLocation(); // URL की जानकारी के लिए
-    const navigate = useNavigate(); // रीडायरेक्ट करने के लिए
+    // 2. Hooks
+    const location = useLocation(); 
+    const navigate = useNavigate(); 
 
-    // 3. वेरिफिकेशन फ़ंक्शन
+    /* =============================================================
+       🚀 VERIFICATION LOGIC BLOCK (START)
+       ============================================================= */
     const verifyAccount = async (token) => {
         setIsLoading(true);
         try {
-            // बैकएंड के वेरिफिकेशन रूट को GET रिक्वेस्ट भेजना
-            // URL: http://localhost:5000/api/auth/verify-email/<token>
-            // const response = await axios.get(`${BACKEND_BASE_URL}/verify-email/${token}`);
-
-            // Axios request ko aise likhein:
-const response = await axios.get(`${BACKEND_BASE_URL}/verify-email?token=${token}`);
+            // Backend call: Isme 'token' query parameter ke roop mein bhej rahe hain
+            const response = await axios.get(`${BACKEND_BASE_URL}/verify-email?token=${token}`);
+            
             if (response.data.success) {
                 setStatus('✅ सफलतापूर्वक वेरीफाई हुआ! अब आप लॉगिन कर सकते हैं।');
                 
-                // 5 सेकंड बाद लॉगिन पेज पर रीडायरेक्ट करें
+                // 5 सेकंड बाद automatic redirect
                 setTimeout(() => {
                     navigate('/login');
                 }, 5000);
             }
-
         } catch (error) {
-            // बैकएंड से आने वाले एरर को हैंडल करना
+            // Error handling
             const errorMessage = error.response?.data?.message || 'वेरिफिकेशन विफल रहा। लिंक अमान्य हो सकता है।';
             setStatus(`❌ त्रुटि: ${errorMessage}`);
         } finally {
@@ -50,26 +40,22 @@ const response = await axios.get(`${BACKEND_BASE_URL}/verify-email?token=${token
         }
     };
 
-    // 4. useEffect: कंपोनेंट लोड होने पर टोकन को पढ़ना और वेरीफाई करना
     useEffect(() => {
-        // URL से Query Parameter (token) को निकालना
+        // URL se ?token=... nikalna
         const searchParams = new URLSearchParams(location.search);
         const token = searchParams.get('token');
 
         if (token) {
-            // अगर टोकन मिल जाता है, तो वेरिफिकेशन प्रोसेस शुरू करें
             verifyAccount(token);
         } else {
-            // अगर URL में टोकन ही नहीं है
             setStatus('❌ वेरिफिकेशन विफल: URL में टोकन नहीं मिला।');
             setIsLoading(false);
         }
-        
-        // useEffect को केवल पहली बार लोड होने पर ही चलाना
-    }, [location]); 
+    }, [location.search]); // location.search par depend hona behtar hai
+    /* =============================================================
+       🚀 VERIFICATION LOGIC BLOCK (END)
+       ============================================================= */
 
-
-    // 5. रेंडरिंग (Rendering)
     return (
         <div style={{ 
             maxWidth: '600px', 
@@ -77,37 +63,46 @@ const response = await axios.get(`${BACKEND_BASE_URL}/verify-email?token=${token
             padding: '20px', 
             textAlign: 'center',
             border: '1px solid #ccc',
-            borderRadius: '8px'
+            borderRadius: '8px',
+            fontFamily: 'Arial, sans-serif'
         }}>
             <h1>ईमेल वेरिफिकेशन</h1>
-            {isLoading && <p>लोड हो रहा है...</p>}
+            <hr />
+            
+            {isLoading && (
+                <div style={{ margin: '20px' }}>
+                    <p>⏳ लोड हो रहा है...</p>
+                </div>
+            )}
             
             <p style={{ 
                 marginTop: '20px', 
                 fontSize: '1.2em', 
-                fontWeight: 'bold' 
+                fontWeight: 'bold',
+                color: status.includes('✅') ? '#28a745' : status.includes('❌') ? '#dc3545' : '#333'
             }}>
                 {status}
             </p>
 
+            {/* Success hone par button dikhayen */}
             {status.includes('सफलतापूर्वक') && (
                 <button 
                     onClick={() => navigate('/login')}
-                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', cursor: 'pointer' }}
+                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
                 >
-                    अब लॉगिन करें
+                    तुरंत लॉगिन करें
                 </button>
             )}
             
-            {status.includes('त्रुटि') && (
-                 <button 
+            {/* Error hone par button dikhayen */}
+            {status.includes('❌') && (
+                <button 
                     onClick={() => navigate('/register')}
-                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', cursor: 'pointer' }}
+                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
                 >
                     रजिस्टर पेज पर वापस जाएँ
                 </button>
             )}
-
         </div>
     );
 };

@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { User, Mail, Lock, UserPlus, Zap } from "lucide-react"; 
 import img1 from '../assets/img2.gif' 
 
-// ... (Animation Variants same rahenge) ...
 const mainContainer = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } } };
 const sectionItem = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
 const formItem = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
@@ -29,21 +28,22 @@ function Register() {
       });
 
       if (response.success) {
-        // 🛠 DEV MODE: Seedha login karwao
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data));
-        navigate("/"); // Seedha Dashboard par bhejo
+        /* =============================================================
+           🚀 IMPORTANT STEP: 
+           User ko "Check Email" page par bhejna aur email data pass karna.
+           ============================================================= */
+        
+        navigate("/check-email", { 
+            state: { email: data.email } 
+        });
 
-      // 🚀 LIVE: Jab verification chalu karni ho, tab upar ki 3 lines comment karke niche wala use karein:
-        // navigate("/check-email", { 
-        //     state: { registeredEmail: data.email } 
-        // });
+        /* ============================================================= */
       
       } else {
-        setError(response.message);
+        setError(response.message || "Registration failed");
       }
     } catch (err) {
-      setError(err.message || "Registration failed");
+      setError(err.response?.data?.message || err.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -51,6 +51,7 @@ function Register() {
 
   return (
     <motion.div className="min-h-screen flex flex-col md:flex-row w-full bg-white" variants={mainContainer} initial="hidden" animate="visible">
+      
       {/* 1. Image Section */}
       <motion.div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white md:h-screen" variants={sectionItem}>
         <div className="text-center max-w-lg">

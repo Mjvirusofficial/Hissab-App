@@ -2,55 +2,40 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true },
+  password: { type: String, required: true },
 
-  /* ==============================================================
-     🚀 LIVE SETTINGS (ABHI DISABLED HAIN)
-     Jab aap email verification live karenge, tab 'default: true' ko 
-     'default: false' kar dena aur niche wale fields ko use karna.
-     ==============================================================
-  */
+  /* ==========================================
+     🚀 EMAIL VERIFICATION BLOCK (START)
+     Is section ko email functionality ke liye 
+     use kiya gaya hai.
+  ========================================== */
   isVerified: {
     type: Boolean,
-    default: true, // Abhi ke liye true hai taaki bina verification login ho sake
+    default: false, // Default false rahega
   },
-  // verificationToken: {
-  //   type: String, // Live ke waqt isko uncomment kar dena
-  // }
-  /* ============================================================== */
+  verificationToken: {
+    type: String,
+  },
+  verificationTokenExpires: {
+    type: Date,
+  },
+  /* ==========================================
+     🚀 EMAIL VERIFICATION BLOCK (END)
+  ========================================== */
 
-}, {
-  timestamps: true 
-});
+}, { timestamps: true });
 
-// ⚡️ PASSWORD HASHING (Register ke waqt password encrypt karne ke liye)
+// Password Hashing
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    next();
-  }
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-  } catch (error) {
-    next(error);
-  }
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
-// ⚡️ MATCH PASSWORD (Login ke waqt password check karne ke liye)
+// Match Password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

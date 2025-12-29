@@ -12,8 +12,15 @@ const { protect } = require('../middleware/authMiddleware');
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
-// 🚀 LIVE: Jab email verification chalu karna ho, tab is niche wali line ko uncomment karein
-router.get('/verify-email/:token', verifyEmail);
+/* =============================================================
+   🔗 EMAIL VERIFICATION ROUTE (START)
+   Aapke controller mein 'req.query' use ho raha hai,
+   isliye route simple '/verify-email' hona chahiye.
+   ============================================================= */
+router.get('/verify-email', verifyEmail); 
+/* =============================================================
+   🔗 EMAIL VERIFICATION ROUTE (END)
+   ============================================================= */
 
 // Protected route
 router.get('/profile', protect, getUserProfile);
