@@ -1,16 +1,15 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto'); // Built-in module
-const nodemailer = require('nodemailer'); // Iske liye terminal me 'npm install nodemailer' zaroor karein
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
-/* ================= EMAIL SENDING LOGIC (Internal) ================= */
-// Humne utils/sendEmail ki jagah function yahi bana diya hai
+/* ================= EMAIL SENDING LOGIC ================= */
 const sendEmail = async (options) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USER, // Render environment variables se aayega
-      pass: process.env.EMAIL_PASS  // Aapka Google App Password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     }
   });
 
@@ -21,15 +20,15 @@ const sendEmail = async (options) => {
     text: options.message
   };
 
-  await transporter.sendMail(mailOptions);
+  // ✅ Yahan await lagana zaroori hai error catch karne ke liye
+  return await transporter.sendMail(mailOptions);
 };
 
-/* ================= JWT TOKEN ================= */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-/* ================= REGISTER (Link wala logic) ================= */
+/* ================= REGISTER ================= */
 const registerUser = async (req, res, next) => { 
   try {
     const { name, email, password } = req.body;
@@ -37,7 +36,6 @@ const registerUser = async (req, res, next) => {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ success: false, message: "User already exists" });
 
-    // OTP ki jagah ek random string token generate karein
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
     const user = await User.create({
@@ -45,10 +43,9 @@ const registerUser = async (req, res, next) => {
       email,
       password,
       isVerified: false,
-      otp: verificationToken, // Token ko hi 'otp' field mein save kar rahe hain
+      otp: verificationToken,
     });
 
-    // Verification URL (Netlify frontend ka link)
     const verifyUrl = `https://hisaab-mj.netlify.app/verify/${verificationToken}`;
 
     try {
@@ -60,21 +57,28 @@ const registerUser = async (req, res, next) => {
 
       res.status(201).json({ success: true, message: "Verification link sent to email." });
     } catch (mailErr) {
-      // Email fail ho to user delete kar dein taaki wo dobara try kar sake
       await User.findByIdAndDelete(user._id);
-      console.error("Email Error:", mailErr);
-      return res.status(500).json({ success: false, message: "Email service error." });
+      
+      // ✅ Yeh line Render ke Logs me error dikhayegi
+      console.error("CRITICAL MAIL ERROR:", mailErr); 
+
+      // ✅ Yeh message frontend alert me dikhega
+      return res.status(500).json({ 
+        success: false, 
+        message: "Email nahi ja pa raha hai. Check App Password.",
+        error: mailErr.message 
+      });
     }
   } catch (err) {
+    console.error("REGISTRATION ERROR:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-/* ================= VERIFY EMAIL (Link click par chalne wala) ================= */
+/* ================= VERIFY EMAIL ================= */
 const verifyEmail = async (req, res, next) => { 
   try {
-    const { token } = req.params; // Route params se token uthayenge
-
+    const { token } = req.params;
     const user = await User.findOne({ otp: token });
 
     if (!user) {
@@ -118,7 +122,7 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-/* ================= GET PROFILE ================= */
+/* ================= PROFILE ================= */
 const getUserProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
