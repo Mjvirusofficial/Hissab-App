@@ -10,20 +10,20 @@ const withoutAmountRoutes = require("./routes/withoutAmountRoutes");
 connectDB();
 const app = express();
 
+// ✅ SIRF EK BAAR CORS USE KAREIN (Multiple origins ke saath)
 app.use(cors({
-  origin: "https://hisaab-mj.netlify.app", // Aapka naya live link
+  origin: ["https://hisaab-mj.netlify.app", "http://localhost:5173"], 
   credentials: true 
 }));
 
-app.use(cors()); // Simple CORS for now
 app.use(express.json());
 
-// Routes: Bina /api ke direct rakhein
+// Routes
 app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use("/withoutAmount", withoutAmountRoutes);
 
-app.get('/', (req, res) => {
+app.get('/', (res, req) => {
   res.send('API is Live!');
 });
 
