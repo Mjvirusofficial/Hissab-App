@@ -7,7 +7,7 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-/* ================= REGISTER (With fixed 'next' parameter) ================= */
+/* ================= REGISTER (Fixed) ================= */
 const registerUser = async (req, res, next) => { 
   try {
     const { name, email, password } = req.body;
@@ -41,7 +41,6 @@ const registerUser = async (req, res, next) => {
         message: "OTP sent to your email. Please verify."
       });
     } catch (mailErr) {
-      // Agar email fail ho toh user delete kar dein taaki wo dobara register kar sake
       await User.findByIdAndDelete(user._id);
       console.error("Mail Error:", mailErr);
       return res.status(500).json({ success: false, message: "Email service error. Try again." });
@@ -114,4 +113,18 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, verifyOTP, loginUser };
+/* ================= GET USER PROFILE ================= */
+const getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (user) {
+      res.json({ success: true, data: user });
+    } else {
+      res.status(404).json({ success: false, message: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+module.exports = { registerUser, verifyOTP, loginUser, getUserProfile };
