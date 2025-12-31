@@ -48,11 +48,11 @@ export const loginUser = async (credentials) => {
 };
 
 // 🚀 LIVE: Verification bypass hai abhi, baad mein use hoga
-export const verifyUserEmail = async (token) => {
-  // Humne ?token=${token} ka use kiya hai kyunki EmailVerification.jsx yahi expect kar raha hai
-  const response = await API.get(`/auth/verify-email?token=${token}`);
-  return response.data;
-};
+// export const verifyUserEmail = async (token) => {
+//   // Humne ?token=${token} ka use kiya hai kyunki EmailVerification.jsx yahi expect kar raha hai
+//   const response = await API.get(`/auth/verify-email?token=${token}`);
+//   return response.data;
+// };
 
 export const getProfile = async () => {
   const response = await API.get('/auth/profile');
