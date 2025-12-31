@@ -2,13 +2,13 @@ import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
 const API = axios.create({
-  baseURL: 'https://hissab-4ggc.onrender.com', // Check karein iske aage /api toh nahi laga?
+  baseURL: 'https://hissab-4ggc.onrender.com',
   headers: {
-    'Content-Type': 'application/json'
-  } 
+    'Content-Type': 'application/json',
+  },
 });
 
-// Request Interceptor: Token automatically har request ke header mein jayega
+// ==================== REQUEST INTERCEPTOR ====================
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -17,7 +17,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Response Interceptor: 401 (Unauthorized) error par auto-logout
+// ==================== RESPONSE INTERCEPTOR ====================
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -34,25 +34,19 @@ API.interceptors.response.use(
 
 export const registerUser = async (userData) => {
   const response = await API.post('/auth/register', userData);
-  
   return response.data;
 };
 
 export const loginUser = async (credentials) => {
   const response = await API.post('/auth/login', credentials);
+
   if (response.data.success && response.data.data?.token) {
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.data));
   }
+
   return response.data;
 };
-
-// 🚀 LIVE: Verification bypass hai abhi, baad mein use hoga
-// export const verifyUserEmail = async (token) => {
-//   // Humne ?token=${token} ka use kiya hai kyunki EmailVerification.jsx yahi expect kar raha hai
-//   const response = await API.get(`/auth/verify-email?token=${token}`);
-//   return response.data;
-// };
 
 export const getProfile = async () => {
   const response = await API.get('/auth/profile');
@@ -93,7 +87,9 @@ export const addProduct = async (expenseId, productData) => {
 };
 
 export const deleteProduct = async (expenseId, productId) => {
-  const response = await API.delete(`/expenses/${expenseId}/products/${productId}`);
+  const response = await API.delete(
+    `/expenses/${expenseId}/products/${productId}`
+  );
   return response.data;
 };
 
@@ -120,12 +116,20 @@ export const deleteWithoutAmountExpense = async (id) => {
 };
 
 export const addProductToWithoutAmount = async (expenseId, productData) => {
-  const response = await API.post(`/withoutAmount/${expenseId}/products`, productData);
+  const response = await API.post(
+    `/withoutAmount/${expenseId}/products`,
+    productData
+  );
   return response.data;
 };
 
-export const deleteProductFromWithoutAmount = async (expenseId, productId) => {
-  const response = await API.delete(`/withoutAmount/${expenseId}/products/${productId}`);
+export const deleteProductFromWithoutAmount = async (
+  expenseId,
+  productId
+) => {
+  const response = await API.delete(
+    `/withoutAmount/${expenseId}/products/${productId}`
+  );
   return response.data;
 };
 
@@ -141,7 +145,7 @@ export const getCurrentUser = () => {
   try {
     return userStr ? JSON.parse(userStr) : null;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return null;
   }
 };
