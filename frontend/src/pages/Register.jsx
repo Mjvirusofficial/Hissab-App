@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../api/allApi";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, UserPlus, Zap } from "lucide-react"; 
+import { User, Mail, Lock, UserPlus, Zap, CheckCircle } from "lucide-react"; 
 import img1 from '../assets/img2.gif';
 
 function Register() {
@@ -11,6 +11,7 @@ function Register() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSent, setIsSent] = useState(false); // Link bhejne ke baad status dikhane ke liye
 
   const onSubmit = async (data) => {
     try {
@@ -25,14 +26,12 @@ function Register() {
 
       if (response.success) {
         /* =============================================================
-           🔗 REDIRECTION TO OTP PAGE (START)
-           Ab token save nahi hoga, seedha verify-otp page par jayenge
-           aur email ko state mein bhejenge.
+           🔗 REDIRECTION LOGIC (UPDATED)
+           Ab verify-otp ki jagah hum Loading/Success message dikhayenge
            ============================================================= */
-        navigate("/verify-otp", { state: { email: data.email } });
-        /* =============================================================
-           🔗 REDIRECTION TO OTP PAGE (END)
-           ============================================================= */
+        setIsSent(true); 
+        // Aap chahein toh CheckEmailLoading page par bhi bhej sakte hain:
+        // navigate("/check-email", { state: { email: data.email } });
       } else {
         setError(response.message || "Registration failed");
       }
@@ -47,6 +46,35 @@ function Register() {
     }
   };
 
+  // Agar link bhej diya gaya hai, toh ye UI dikhao
+  if (isSent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }} 
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white p-8 rounded-2xl shadow-xl max-w-md text-center border border-green-100"
+        >
+          <div className="flex justify-center mb-6">
+            <div className="bg-green-100 p-4 rounded-full">
+              <CheckCircle size={50} className="text-green-600" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Email Sent!</h2>
+          <p className="text-gray-600 mb-6">
+            Humne ek verification link aapke email par bheja hai. Kripya apna inbox (aur Spam folder) check karein.
+          </p>
+          <button 
+            onClick={() => window.location.href = "https://mail.google.com"}
+            className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all"
+          >
+            Check Gmail
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row w-full bg-white">
       {/* Image Section */}
@@ -60,7 +88,7 @@ function Register() {
           </div>
           <p className="mt-6 text-gray-600 flex items-center justify-center font-medium">
             <Zap size={20} className="mr-2 text-indigo-600" />
-            Verification code will be sent to your email.
+            Verification link will be sent to your email.
           </p>
         </div>
       </div>
@@ -78,7 +106,7 @@ function Register() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="relative">
+            <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
               <input {...register("name", { required: true })} placeholder="John Doe"
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all" />
@@ -100,7 +128,7 @@ function Register() {
               className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center
                 ${loading ? "bg-indigo-300 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200"}`}>
               <UserPlus size={20} className="mr-2" />
-              {loading ? "Sending OTP..." : "Register & Get OTP"}
+              {loading ? "Sending Link..." : "Register"}
             </button>
           </form>
 
