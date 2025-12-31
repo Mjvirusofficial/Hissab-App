@@ -37,6 +37,18 @@ export const registerUser = async (userData) => {
   return response.data;
 };
 
+/* =============================================================
+   🔗 EMAIL VERIFICATION (OTP) FUNCTION (START)
+   Yeh function humne naya add kiya hai OTP verify karne ke liye
+   ============================================================= */
+export const verifyOTP = async (otpData) => {
+  const response = await API.post('/auth/verify-otp', otpData);
+  return response.data;
+};
+/* =============================================================
+   🔗 EMAIL VERIFICATION (OTP) FUNCTION (END)
+   ============================================================= */
+
 export const loginUser = async (credentials) => {
   const response = await API.post('/auth/login', credentials);
 

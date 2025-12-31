@@ -8,9 +8,13 @@ import Navbar from "./component/Navbar";
 import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
 
-// ❌ Inki ab zaroorat nahi hai isliye import hata diya
-// import EmailVerification from './pages/verification/EmailVerification';
-// import CheckEmailLoading from './pages/verification/CheckEmailLoading';
+/* =============================================================
+   🔗 NEW OTP PAGE IMPORT (START)
+   ============================================================= */
+import OTPVerification from "./pages/OTPVerification"; 
+/* =============================================================
+   🔗 NEW OTP PAGE IMPORT (END)
+   ============================================================= */
 
 function App() {
   return (
@@ -22,13 +26,19 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          /* =============================================================
+             🔗 NEW OTP ROUTE (START)
+             ============================================================= */
+          <Route path="/verify-otp" element={<OTPVerification />} />
+          /* =============================================================
+             🔗 NEW OTP ROUTE (END)
+             ============================================================= */
+
           {/* Home / Dashboard */}
           <Route path="/" element={<Home />} />
           
           <Route path="/with-ammount/:id" element={<WithAmount />} />
           <Route path="/without-amount/:id" element={<WithoutAmount />} />
-
-          {/* ❌ Verification routes yahan se delete kar diye gaye hain */}
 
           {/* Redirect to home if no route matches */}
           <Route path="*" element={<Navigate to="/" replace />} />

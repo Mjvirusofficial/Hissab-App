@@ -4,7 +4,7 @@ const {
     registerUser, 
     loginUser, 
     getUserProfile,
-    verifyEmail 
+    verifyOTP  // Humne controller mein iska naam verifyOTP rakha hai
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -13,14 +13,10 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 /* =============================================================
-   🔗 EMAIL VERIFICATION ROUTE (START)
-   Aapke controller mein 'req.query' use ho raha hai,
-   isliye route simple '/verify-email' hona chahiye.
+    🔗 OTP VERIFICATION ROUTE
+    Frontend se OTP post karne ke liye
    ============================================================= */
-router.get('/verify-email', verifyEmail); 
-/* =============================================================
-   🔗 EMAIL VERIFICATION ROUTE (END)
-   ============================================================= */
+router.post('/verify-otp', verifyOTP); 
 
 // Protected route
 router.get('/profile', protect, getUserProfile);

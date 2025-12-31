@@ -18,20 +18,30 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // Verification ke liye fields
+    isVerified: {
+      type: Boolean,
+      default: false, // Naya user hamesha unverified hoga
+    },
+    otp: {
+      type: String,
+    },
+    otpExpire: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
 
-// ==================== PASSWORD HASHING ====================
+// Password hashing logic
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// ==================== MATCH PASSWORD ====================
+// Password match helper
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

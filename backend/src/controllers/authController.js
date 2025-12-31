@@ -1,138 +1,122 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/sendEmail'); // Step 2 wali file
 
-/* ================= JWT TOKEN GENERATOR ================= */
+/* ================= JWT TOKEN ================= */
 const generateToken = (id) => {
-  // Check if JWT_SECRET exists in environment variables
-  if (!process.env.JWT_SECRET) {
-    console.error("CRITICAL ERROR: JWT_SECRET is missing in .env file or Render settings!");
-    throw new Error("Server configuration error (JWT)");
-  }
-
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
-  });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-/* ================= REGISTER (NO EMAIL VERIFICATION) ================= */
+/* ================= REGISTER (With OTP) ================= */
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // 1. Validation
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide name, email and password",
-      });
-    }
-
-    // 2. Duplicate Check (Important as per your request)
+    // 1. Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({
-        success: false,
-        message: "This email is already registered",
-      });
+      return res.status(400).json({ success: false, message: "User already exists" });
     }
 
-    // 3. Create User (Automatically verified)
+    // 2. Generate 6 Digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpire = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+
+    // 3. Create User (unverified)
     const user = await User.create({
       name,
       email,
       password,
-      isVerified: true // Direct verification
+      isVerified: false,
+      otp,
+      otpExpire
     });
 
-    // 4. Generate Token
-    const token = generateToken(user._id);
-
-    // 5. Success Response
-    res.status(201).json({
-      success: true,
-      message: "Registration successful!",
-      data: {
-        _id: user._id,
-        name: user.name,
+    // 4. Send Email
+    try {
+      await sendEmail({
         email: user.email,
-        token,
-      },
-    });
+        subject: 'Hissab App - Verify Your Email',
+        message: `Your OTP for registration is: ${otp}. It is valid for 10 minutes.`
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "OTP sent to your email. Please verify."
+      });
+    } catch (mailErr) {
+      // Agar email na jaye toh user delete kar dein ya handle karein
+      console.error("Mail Error:", mailErr);
+      return res.status(500).json({ success: false, message: "Error sending email. Try again." });
+    }
+
   } catch (err) {
-    console.error("REGISTER ERROR:", err);
-    res.status(500).json({
-      success: false,
-      message: err.message || "Internal Server Error",
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-/* ================= LOGIN ================= */
+/* ================= VERIFY OTP (Naya Function) ================= */
+const verifyOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    // User dhoondhein jiska OTP match kare aur expire na hua ho
+    const user = await User.findOne({
+      email,
+      otp,
+      otpExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+    }
+
+    // Mark as verified
+    user.isVerified = true;
+    user.otp = undefined; // OTP clear karein
+    user.otpExpire = undefined;
+    await user.save();
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully!",
+      token,
+      data: user
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+/* ================= LOGIN (With Verification Check) ================= */
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide email and password",
-      });
-    }
-
-    // Find user
     const user = await User.findOne({ email });
 
-    // Match password
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(400).json({
+      return res.status(400).json({ success: false, message: "Invalid email or password" });
+    }
+
+    // ❌ Agar verified nahi hai toh login mat hone do
+    if (!user.isVerified) {
+      return res.status(401).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Your email is not verified. Please verify first."
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
-
     res.json({
       success: true,
       message: "Login successful",
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token,
-      },
+      data: { _id: user._id, name: user.name, email: user.email, token }
     });
   } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    res.status(500).json({
-      success: false,
-      message: err.message || "Internal Server Error",
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-/* ================= GET PROFILE ================= */
-const getUserProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-    res.json({
-      success: true,
-      data: user,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-};
-
-module.exports = {
-  registerUser,
-  loginUser,
-  getUserProfile,
-};
+module.exports = { registerUser, verifyOTP, loginUser };

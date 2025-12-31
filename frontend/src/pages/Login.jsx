@@ -47,9 +47,20 @@ function Login() {
         setError(response.message);
       }
     } catch (err) {
-      // 🚀 LIVE: Agar user verified nahi hoga, toh backend se aane wala 
-      // error message (403 Forbidden) yahan error state mein dikhayi dega.
-      setError(err.message || "Login failed");
+      /* =============================================================
+         🔗 UNVERIFIED USER REDIRECT (START)
+         Agar backend 401 error bhejta hai (yani email verify nahi hai),
+         toh user ko state ke saath OTP page par bhej dein.
+         ============================================================= */
+      if (err.response?.status === 401 || err.message?.toLowerCase().includes("verify")) {
+        navigate("/verify-otp", { state: { email: data.email } });
+        return;
+      }
+      /* =============================================================
+         🔗 UNVERIFIED USER REDIRECT (END)
+         ============================================================= */
+
+      setError(err.response?.data?.message || err.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -115,7 +126,7 @@ function Login() {
                               {...register("email", { required: true })}
                               type="email"
                               placeholder="Email Address"
-                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 transition"
+                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none transition"
                           />
                       </div>
                   </motion.div>
@@ -129,7 +140,7 @@ function Login() {
                               {...register("password", { required: true })}
                               type="password"
                               placeholder="••••••••"
-                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 transition"
+                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none transition"
                           />
                       </div>
                   </motion.div>
@@ -153,7 +164,7 @@ function Login() {
               <motion.p className="mt-8 text-center text-sm text-gray-600" variants={formItem}>
                   Don't have an account?{" "}
                   <Link to="/register" className="text-indigo-600 font-semibold hover:underline transition">
-                      Register Here
+                    Register Here
                   </Link>
               </motion.p>
           </div>
