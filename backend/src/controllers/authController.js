@@ -1,13 +1,13 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const sendEmail = require('../utils/sendEmail'); // Step 2 wali file
+const sendEmail = require('../utils/sendEmail'); 
 
 /* ================= JWT TOKEN ================= */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-/* ================= REGISTER (With OTP) ================= */
+/* ================= REGISTER (With Debugging & Cleanup) ================= */
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
 
     // 2. Generate 6 Digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpire = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+    const otpExpire = Date.now() + 10 * 60 * 1000; 
 
     // 3. Create User (unverified)
     const user = await User.create({
@@ -32,7 +32,11 @@ const registerUser = async (req, res) => {
       otpExpire
     });
 
-    // 4. Send Email
+    /* =============================================================
+       🔗 EMAIL SENDING WITH CLEANUP (START)
+       Agar email fail hota hai, toh hum user ko delete kar denge
+       taaki wo "User already exists" error mein na phase.
+       ============================================================= */
     try {
       await sendEmail({
         email: user.email,
@@ -45,22 +49,31 @@ const registerUser = async (req, res) => {
         message: "OTP sent to your email. Please verify."
       });
     } catch (mailErr) {
-      // Agar email na jaye toh user delete kar dein ya handle karein
-      console.error("Mail Error:", mailErr);
-      return res.status(500).json({ success: false, message: "Error sending email. Try again." });
+      // ❌ Email fail hua, toh database se user hatao
+      await User.findByIdAndDelete(user._id);
+      
+      console.error("CRITICAL: Nodemailer Error ->", mailErr);
+      
+      return res.status(500).json({ 
+        success: false, 
+        message: "Email service failed. Please check your App Password or Internet." 
+      });
     }
+    /* =============================================================
+       🔗 EMAIL SENDING WITH CLEANUP (END)
+       ============================================================= */
 
   } catch (err) {
+    console.error("REGISTER ERROR:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-/* ================= VERIFY OTP (Naya Function) ================= */
+/* ================= VERIFY OTP ================= */
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
 
-    // User dhoondhein jiska OTP match kare aur expire na hua ho
     const user = await User.findOne({
       email,
       otp,
@@ -71,9 +84,8 @@ const verifyOTP = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
     }
 
-    // Mark as verified
     user.isVerified = true;
-    user.otp = undefined; // OTP clear karein
+    user.otp = undefined; 
     user.otpExpire = undefined;
     await user.save();
 
@@ -90,7 +102,7 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-/* ================= LOGIN (With Verification Check) ================= */
+/* ================= LOGIN ================= */
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -100,7 +112,6 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
-    // ❌ Agar verified nahi hai toh login mat hone do
     if (!user.isVerified) {
       return res.status(401).json({
         success: false,
