@@ -7,7 +7,7 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-/* ================= REGISTER (Fixed) ================= */
+/* ================= REGISTER ================= */
 const registerUser = async (req, res, next) => { 
   try {
     const { name, email, password } = req.body;
@@ -33,7 +33,7 @@ const registerUser = async (req, res, next) => {
       await sendEmail({
         email: user.email,
         subject: 'Hissab App - Verify Your Email',
-        message: `Your OTP for registration is: ${otp}. It is valid for 10 minutes.`
+        message: `Your OTP is: ${otp}`
       });
 
       res.status(201).json({
@@ -47,7 +47,6 @@ const registerUser = async (req, res, next) => {
     }
 
   } catch (err) {
-    console.error("REGISTER ERROR:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -72,12 +71,10 @@ const verifyOTP = async (req, res, next) => {
     user.otpExpire = undefined;
     await user.save();
 
-    const token = generateToken(user._id);
-
     res.status(200).json({
       success: true,
       message: "Email verified successfully!",
-      token,
+      token: generateToken(user._id),
       data: user
     });
   } catch (err) {
@@ -98,30 +95,30 @@ const loginUser = async (req, res, next) => {
     if (!user.isVerified) {
       return res.status(401).json({
         success: false,
-        message: "Your email is not verified. Please verify first."
+        message: "Please verify your email first."
       });
     }
 
-    const token = generateToken(user._id);
     res.json({
       success: true,
       message: "Login successful",
-      data: { _id: user._id, name: user.name, email: user.email, token }
+      data: { 
+        _id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        token: generateToken(user._id) 
+      }
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-/* ================= GET USER PROFILE ================= */
+/* ================= GET PROFILE ================= */
 const getUserProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    if (user) {
-      res.json({ success: true, data: user });
-    } else {
-      res.status(404).json({ success: false, message: "User not found" });
-    }
+    res.json({ success: true, data: user });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

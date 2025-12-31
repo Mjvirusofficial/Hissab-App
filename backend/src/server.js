@@ -27,6 +27,11 @@ app.get('/', (res, req) => {
   res.send('API is Live!');
 });
 
+// Is line ko dhundhein aur aise fix karein
+app.get("/", (req, res) => {  // Pehle 'req', phir 'res' hona chahiye
+  res.send("API is running...");
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
