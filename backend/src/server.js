@@ -13,31 +13,44 @@ const app = express();
 connectDB();
 
 // ✅ Advanced CORS Configuration
+// Humne origin function ko thoda simple rakha hai taaki crash na ho
+const allowedOrigins = ["https://hisaab-mj.netlify.app", "http://localhost:5173"];
+
 app.use(cors({
-  origin: ["https://hisaab-mj.netlify.app", "http://localhost:5173"], 
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // OPTIONS zaroori hai
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true 
+  origin: function (origin, callback) {
+    // browser requests (origin null nahi hota) check karne ke liye
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS Policy Error'));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Pre-flight requests (OPTIONS) ko handle karne ke liye
-app.options("*", cors()); 
-
+// ✅ Body Parser
 app.use(express.json());
 
-// Routes
+// ✅ Routes
 app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use("/withoutAmount", withoutAmountRoutes);
 
+// ✅ Health Check Route
 app.get("/", (req, res) => {
   res.send("API is Live with Email Verification!");
 });
 
-// ✅ Error Handling Middleware (Crashes rokne ke liye)
+// ✅ Global Error Handler (Crashes se bachane ke liye)
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ success: false, message: "Internal Server Error" });
+  if (err.message === 'CORS Policy Error') {
+    res.status(403).json({ message: "CORS not allowed" });
+  } else {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
 });
 
 const PORT = process.env.PORT || 5000;
