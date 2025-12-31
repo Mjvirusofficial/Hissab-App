@@ -165,7 +165,7 @@ const getUserProfile = async (req, res) => {
         res.json({ success: true, data: user });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error' });
-    }
+    }  
 };
 
 module.exports = { registerUser, loginUser, getUserProfile, verifyEmail };
