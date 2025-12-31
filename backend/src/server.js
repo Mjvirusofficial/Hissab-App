@@ -10,7 +10,6 @@ const withoutAmountRoutes = require("./routes/withoutAmountRoutes");
 connectDB();
 const app = express();
 
-// ✅ SIRF EK BAAR CORS USE KAREIN (Multiple origins ke saath)
 app.use(cors({
   origin: ["https://hisaab-mj.netlify.app", "http://localhost:5173"], 
   credentials: true 
@@ -23,13 +22,9 @@ app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use("/withoutAmount", withoutAmountRoutes);
 
-app.get('/', (res, req) => {
-  res.send('API is Live!');
-});
-
-// Is line ko dhundhein aur aise fix karein
-app.get("/", (req, res) => {  // Pehle 'req', phir 'res' hona chahiye
-  res.send("API is running...");
+// ✅ Fixed parameters (req, res)
+app.get("/", (req, res) => {
+  res.send("API is running and Live!");
 });
 
 const PORT = process.env.PORT || 5000;
