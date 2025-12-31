@@ -7,7 +7,7 @@ import Register from "./pages/Register";
 import Navbar from "./component/Navbar";
 import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
-
+import CheckEmailLoading from "./pages/verification/CheckEmailLoading"; // Naya Page
 /* =============================================================
     🔗 LINK VERIFICATION PAGE IMPORT (UPDATED)
    ============================================================= */
@@ -30,6 +30,8 @@ function App() {
              ============================================================= */}
           <Route path="/verify/:token" element={<EmailVerification />} />
 
+{/* ✅ Email Link Sent Success Page */}
+        <Route path="/check-email" element={<CheckEmailLoading />} />
           {/* Home / Dashboard */}
           <Route path="/" element={<Home />} />
           
