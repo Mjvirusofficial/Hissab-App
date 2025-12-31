@@ -24,7 +24,7 @@ app.use("/withoutAmount", withoutAmountRoutes);
 
 // ✅ Fixed parameters (req, res)
 app.get("/", (req, res) => {
-  res.send("API is running and Live!");
+  res.send("API is Live with Email Verification!");
 });
 
 const PORT = process.env.PORT || 5000;

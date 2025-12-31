@@ -1,38 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // useParams use karein
 import axios from 'axios';
 
-// 🌐 Config: Aapka Backend URL
-const BACKEND_BASE_URL = 'https://hissab-4ggc.onrender.com/api/auth';
+// 🌐 Config: Base URL mein '/api' check karein, agar aapne server.js mein nahi lagaya toh hata dein
+const BACKEND_BASE_URL = 'https://hissab-4ggc.onrender.com/auth'; 
 
 const EmailVerification = () => {
-    // 1. States
     const [status, setStatus] = useState('ईमेल वेरीफाई किया जा रहा है... कृपया प्रतीक्षा करें।');
     const [isLoading, setIsLoading] = useState(true);
     
-    // 2. Hooks
-    const location = useLocation(); 
+    const { token } = useParams(); // ✅ FIX: URL params se token nikalne ke liye
     const navigate = useNavigate(); 
 
-    /* =============================================================
-       🚀 VERIFICATION LOGIC BLOCK (START)
-       ============================================================= */
-    const verifyAccount = async (token) => {
+    const verifyAccount = async (verificationToken) => {
         setIsLoading(true);
         try {
-            // Backend call: Isme 'token' query parameter ke roop mein bhej rahe hain
-            const response = await axios.get(`${BACKEND_BASE_URL}/verify-email?token=${token}`);
+            // ✅ FIX: Backend route match kiya gaya hai (/auth/verify/:token)
+            const response = await axios.get(`${BACKEND_BASE_URL}/verify/${verificationToken}`);
             
             if (response.data.success) {
                 setStatus('✅ सफलतापूर्वक वेरीफाई हुआ! अब आप लॉगिन कर सकते हैं।');
-                
-                // 5 सेकंड बाद automatic redirect
                 setTimeout(() => {
                     navigate('/login');
                 }, 5000);
             }
         } catch (error) {
-            // Error handling
             const errorMessage = error.response?.data?.message || 'वेरिफिकेशन विफल रहा। लिंक अमान्य हो सकता है।';
             setStatus(`❌ त्रुटि: ${errorMessage}`);
         } finally {
@@ -41,20 +33,13 @@ const EmailVerification = () => {
     };
 
     useEffect(() => {
-        // URL se ?token=... nikalna
-        const searchParams = new URLSearchParams(location.search);
-        const token = searchParams.get('token');
-
         if (token) {
             verifyAccount(token);
         } else {
             setStatus('❌ वेरिफिकेशन विफल: URL में टोकन नहीं मिला।');
             setIsLoading(false);
         }
-    }, [location.search]); // location.search par depend hona behtar hai
-    /* =============================================================
-       🚀 VERIFICATION LOGIC BLOCK (END)
-       ============================================================= */
+    }, [token]); 
 
     return (
         <div style={{ 
@@ -84,8 +69,7 @@ const EmailVerification = () => {
                 {status}
             </p>
 
-            {/* Success hone par button dikhayen */}
-            {status.includes('सफलतापूर्वक') && (
+            {status.includes('✅') && (
                 <button 
                     onClick={() => navigate('/login')}
                     style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
@@ -94,7 +78,6 @@ const EmailVerification = () => {
                 </button>
             )}
             
-            {/* Error hone par button dikhayen */}
             {status.includes('❌') && (
                 <button 
                     onClick={() => navigate('/register')}

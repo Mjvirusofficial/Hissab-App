@@ -38,16 +38,14 @@ export const registerUser = async (userData) => {
 };
 
 /* =============================================================
-   🔗 EMAIL VERIFICATION (OTP) FUNCTION (START)
-   Yeh function humne naya add kiya hai OTP verify karne ke liye
+    🔗 EMAIL VERIFICATION (LINK) FUNCTION (FIXED)
+    Ab hum POST ki jagah GET use kar rahe hain aur URL mein token bhej rahe hain
    ============================================================= */
-export const verifyOTP = async (otpData) => {
-  const response = await API.post('/auth/verify-otp', otpData);
+export const verifyEmail = async (token) => {
+  // Backend route: /auth/verify/:token
+  const response = await API.get(`/auth/verify/${token}`);
   return response.data;
 };
-/* =============================================================
-   🔗 EMAIL VERIFICATION (OTP) FUNCTION (END)
-   ============================================================= */
 
 export const loginUser = async (credentials) => {
   const response = await API.post('/auth/login', credentials);

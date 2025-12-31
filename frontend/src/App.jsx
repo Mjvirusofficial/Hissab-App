@@ -9,12 +9,10 @@ import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
 
 /* =============================================================
-   🔗 NEW OTP PAGE IMPORT (START)
+    🔗 LINK VERIFICATION PAGE IMPORT (UPDATED)
    ============================================================= */
-import OTPVerification from "./pages/OTPVerification"; 
-/* =============================================================
-   🔗 NEW OTP PAGE IMPORT (END)
-   ============================================================= */
+// Folder structure ke hisaab se import path check kar lein
+import EmailVerification from "./pages/verification/EmailVerification"; 
 
 function App() {
   return (
@@ -26,13 +24,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          /* =============================================================
-             🔗 NEW OTP ROUTE (START)
-             ============================================================= */
-          <Route path="/verify-otp" element={<OTPVerification />} />
-          /* =============================================================
-             🔗 NEW OTP ROUTE (END)
-             ============================================================= */
+          {/* =============================================================
+              🔗 NEW EMAIL VERIFICATION ROUTE (FIXED)
+              Yahan /:token lagana zaroori hai taaki URL se token read ho sake
+             ============================================================= */}
+          <Route path="/verify/:token" element={<EmailVerification />} />
 
           {/* Home / Dashboard */}
           <Route path="/" element={<Home />} />
