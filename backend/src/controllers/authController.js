@@ -7,22 +7,19 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-/* ================= REGISTER (With Debugging & Cleanup) ================= */
-const registerUser = async (req, res) => {
+/* ================= REGISTER (With fixed 'next' parameter) ================= */
+const registerUser = async (req, res, next) => { 
   try {
     const { name, email, password } = req.body;
 
-    // 1. Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ success: false, message: "User already exists" });
     }
 
-    // 2. Generate 6 Digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpire = Date.now() + 10 * 60 * 1000; 
 
-    // 3. Create User (unverified)
     const user = await User.create({
       name,
       email,
@@ -32,11 +29,6 @@ const registerUser = async (req, res) => {
       otpExpire
     });
 
-    /* =============================================================
-       🔗 EMAIL SENDING WITH CLEANUP (START)
-       Agar email fail hota hai, toh hum user ko delete kar denge
-       taaki wo "User already exists" error mein na phase.
-       ============================================================= */
     try {
       await sendEmail({
         email: user.email,
@@ -49,19 +41,11 @@ const registerUser = async (req, res) => {
         message: "OTP sent to your email. Please verify."
       });
     } catch (mailErr) {
-      // ❌ Email fail hua, toh database se user hatao
+      // Agar email fail ho toh user delete kar dein taaki wo dobara register kar sake
       await User.findByIdAndDelete(user._id);
-      
-      console.error("CRITICAL: Nodemailer Error ->", mailErr);
-      
-      return res.status(500).json({ 
-        success: false, 
-        message: "Email service failed. Please check your App Password or Internet." 
-      });
+      console.error("Mail Error:", mailErr);
+      return res.status(500).json({ success: false, message: "Email service error. Try again." });
     }
-    /* =============================================================
-       🔗 EMAIL SENDING WITH CLEANUP (END)
-       ============================================================= */
 
   } catch (err) {
     console.error("REGISTER ERROR:", err);
@@ -70,7 +54,7 @@ const registerUser = async (req, res) => {
 };
 
 /* ================= VERIFY OTP ================= */
-const verifyOTP = async (req, res) => {
+const verifyOTP = async (req, res, next) => { 
   try {
     const { email, otp } = req.body;
 
@@ -103,7 +87,7 @@ const verifyOTP = async (req, res) => {
 };
 
 /* ================= LOGIN ================= */
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => { 
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
