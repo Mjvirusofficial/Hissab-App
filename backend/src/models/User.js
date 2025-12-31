@@ -18,10 +18,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // Verification ke liye fields
     isVerified: {
       type: Boolean,
-      default: false, // Naya user hamesha unverified hoga
+      default: false,
     },
     otp: {
       type: String,
@@ -33,12 +32,20 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Password hashing logic
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+// ==================== PASSWORD HASHING (FIXED) ====================
+// Modern Mongoose async pattern: Hum 'next' parameter ko hata rahe hain 
+// kyunki async functions me return hi kafi hota hai.
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) {
+    return; // next() ki jagah seedha return
+  }
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  } catch (error) {
+    throw new Error("Password hashing failed: " + error.message);
+  }
 });
 
 // Password match helper
