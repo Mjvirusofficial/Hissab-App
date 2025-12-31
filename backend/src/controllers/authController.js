@@ -16,6 +16,12 @@ const generateToken = (id) => {
    🚀 EMAIL SENDER UTILITY (START)
    ============================================================= */
 const sendVerificationEmail = async (userEmail, token) => {
+    // Check if env variables are present
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error("❌ ERROR: EMAIL_USER or EMAIL_PASS is missing in Environment Variables!");
+        throw new Error("Email configuration missing on server");
+    }
+
     const verificationUrl = `https://hisaab-mj.netlify.app/verify-email?token=${token}`;
 
     const transporter = nodemailer.createTransport({
@@ -41,7 +47,13 @@ const sendVerificationEmail = async (userEmail, token) => {
         `,
     };
 
-    await transporter.sendMail(mailOptions);
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log("✅ Email sent successfully to:", userEmail);
+    } catch (error) {
+        console.error("❌ Nodemailer Error:", error.message);
+        throw error; // Rethrow to catch in registerUser
+    }
 };
 /* =============================================================
    🚀 EMAIL SENDER UTILITY (END)
@@ -62,9 +74,6 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ success: false, message: 'User already exists' });
         }
 
-        /* -------------------------------------------
-           📧 VERIFICATION LOGIC (START)
-           ------------------------------------------- */
         const verificationToken = crypto.randomBytes(32).toString('hex');
 
         const user = await User.create({
@@ -75,18 +84,25 @@ const registerUser = async (req, res) => {
             verificationToken: verificationToken, 
         });
 
-        // Email bhejna (Nodemailer call)
-        await sendVerificationEmail(user.email, verificationToken);
-        /* -------------------------------------------
-           📧 VERIFICATION LOGIC (END)
-           ------------------------------------------- */
+        // Email bhejna
+        try {
+            await sendVerificationEmail(user.email, verificationToken);
+        } catch (emailErr) {
+            // Agar email fail ho jaye toh user ko delete kar dena chahiye taaki wo dubara try kar sake
+            await User.findByIdAndDelete(user._id);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Error sending verification email. Please try again later.',
+                error: emailErr.message 
+            });
+        }
 
         res.status(201).json({
             success: true,
             message: 'Registration successful! Please check your email to verify your account.',
         });
     } catch (error) {
-        console.error("Register Error:", error.message);
+        console.error("🔥 Register Error:", error.message);
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 };
@@ -104,18 +120,12 @@ const loginUser = async (req, res) => {
 
         if (user && (await user.matchPassword(password))) {
             
-            /* -------------------------------------------
-               🛡️ VERIFICATION CHECK (START)
-               ------------------------------------------- */
             if (!user.isVerified) {
                 return res.status(401).json({ 
                     success: false, 
                     message: 'Please verify your email before logging in.' 
                 });
             }
-            /* -------------------------------------------
-               🛡️ VERIFICATION CHECK (END)
-               ------------------------------------------- */
 
             const token = generateToken(user._id);
             res.json({
@@ -131,12 +141,8 @@ const loginUser = async (req, res) => {
     }
 };
 
-/* =============================================================
-   🔗 EMAIL VERIFICATION HANDLER (START)
-   ============================================================= */
 const verifyEmail = async (req, res) => {
     try {
-        // Query parameter se token lena (?token=...)
         const { token } = req.query; 
 
         const user = await User.findOne({ verificationToken: token });
@@ -146,7 +152,7 @@ const verifyEmail = async (req, res) => {
         }
 
         user.isVerified = true;
-        user.verificationToken = undefined; // Token ka kaam khatam
+        user.verificationToken = undefined; 
         await user.save();
 
         res.status(200).json({ success: true, message: 'Email verified successfully! You can now login.' });
@@ -154,9 +160,6 @@ const verifyEmail = async (req, res) => {
         res.status(500).json({ success: false, message: 'Verification error' });
     }
 };
-/* =============================================================
-   🔗 EMAIL VERIFICATION HANDLER (END)
-   ============================================================= */
 
 const getUserProfile = async (req, res) => {
     try {
