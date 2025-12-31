@@ -7,9 +7,10 @@ import Register from "./pages/Register";
 import Navbar from "./component/Navbar";
 import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
-import EmailVerification from './pages/verification/EmailVerification';
-import CheckEmailLoading from './pages/verification/CheckEmailLoading';
 
+// ❌ Inki ab zaroorat nahi hai isliye import hata diya
+// import EmailVerification from './pages/verification/EmailVerification';
+// import CheckEmailLoading from './pages/verification/CheckEmailLoading';
 
 function App() {
   return (
@@ -21,20 +22,20 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Public Routes (without authentication) */}
+          {/* Home / Dashboard */}
           <Route path="/" element={<Home />} />
-          {/* ✅ Route path को Home.js में जैसे navigate कर रहे हैं वैसा ही करें */}
+          
           <Route path="/with-ammount/:id" element={<WithAmount />} />
           <Route path="/without-amount/:id" element={<WithoutAmount />} />
-<Route path="/verify-email" element={<EmailVerification />} />
- <Route path="/check-email" element={<CheckEmailLoading />} />         
+
+          {/* ❌ Verification routes yahan se delete kar diye gaye hain */}
+
           {/* Redirect to home if no route matches */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer/>
       </div>
     </Router>
-    
   );
 }
 
