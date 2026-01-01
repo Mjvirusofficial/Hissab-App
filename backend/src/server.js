@@ -13,8 +13,29 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors()); // Sabhi origins allow hain (Development ke liye best)
+// ==================== UPDATED CORS MIDDLEWARE ====================
+const allowedOrigins = [
+  'http://localhost:3000',      // Local React (Create React App)
+  'http://localhost:5173',      // Local React (Vite)
+  'https://hisaab-mj.netlify.app' // Aapka Live Frontend
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Mobile apps ya curl requests mein origin nahi hota, unhe allow karein
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS Policy: This origin is not allowed!'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 // Routes Setup
@@ -25,6 +46,15 @@ app.use("/withoutAmount", withoutAmountRoutes);
 // Basic route
 app.get('/', (req, res) => {
   res.send('Expense Tracker API is running smoothly...');
+});
+
+// Error Handling for CORS or other issues
+app.use((err, req, res, next) => {
+  if (err.message === 'CORS Policy: This origin is not allowed!') {
+    res.status(403).json({ success: false, message: err.message });
+  } else {
+    next(err);
+  }
 });
 
 const PORT = process.env.PORT || 5000;

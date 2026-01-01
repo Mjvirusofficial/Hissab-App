@@ -1,8 +1,11 @@
 import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
+// Ye line check karegi agar environment mein URL hai (Netlify/Production) 
+// warna local server use karegi
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const API = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -34,7 +37,6 @@ API.interceptors.response.use(
 
 export const registerUser = async (userData) => {
   const response = await API.post('/auth/register', userData);
-  // DEV MODE: Registration ke sath hi token save kar rahe hain
   if (response.data.success && response.data.data?.token) {
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.data));
@@ -50,12 +52,6 @@ export const loginUser = async (credentials) => {
   }
   return response.data;
 };
-
-// 🚀 LIVE: Verification bypass hai abhi, baad mein use hoga
-// export const verifyUserEmail = async (token) => {
-//   const response = await API.get(`/auth/verify-email/${token}`);
-//   return response.data;
-// };
 
 export const getProfile = async () => {
   const response = await API.get('/auth/profile');
