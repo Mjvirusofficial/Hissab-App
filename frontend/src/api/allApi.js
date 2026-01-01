@@ -2,13 +2,13 @@ import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
 const API = axios.create({
-  baseURL: 'https://hissab-4ggc.onrender.com',
+  baseURL: 'http://localhost:5000',
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
-// ==================== REQUEST INTERCEPTOR ====================
+// Request Interceptor: Token automatically har request ke header mein jayega
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -17,7 +17,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// ==================== RESPONSE INTERCEPTOR ====================
+// Response Interceptor: 401 (Unauthorized) error par auto-logout
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -34,29 +34,28 @@ API.interceptors.response.use(
 
 export const registerUser = async (userData) => {
   const response = await API.post('/auth/register', userData);
-  return response.data;
-};
-
-/* =============================================================
-    🔗 EMAIL VERIFICATION (LINK) FUNCTION (FIXED)
-    Ab hum POST ki jagah GET use kar rahe hain aur URL mein token bhej rahe hain
-   ============================================================= */
-export const verifyEmail = async (token) => {
-  // Backend route: /auth/verify/:token
-  const response = await API.get(`/auth/verify/${token}`);
+  // DEV MODE: Registration ke sath hi token save kar rahe hain
+  if (response.data.success && response.data.data?.token) {
+    localStorage.setItem('token', response.data.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.data));
+  }
   return response.data;
 };
 
 export const loginUser = async (credentials) => {
   const response = await API.post('/auth/login', credentials);
-
   if (response.data.success && response.data.data?.token) {
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.data));
   }
-
   return response.data;
 };
+
+// 🚀 LIVE: Verification bypass hai abhi, baad mein use hoga
+// export const verifyUserEmail = async (token) => {
+//   const response = await API.get(`/auth/verify-email/${token}`);
+//   return response.data;
+// };
 
 export const getProfile = async () => {
   const response = await API.get('/auth/profile');
@@ -97,9 +96,7 @@ export const addProduct = async (expenseId, productData) => {
 };
 
 export const deleteProduct = async (expenseId, productId) => {
-  const response = await API.delete(
-    `/expenses/${expenseId}/products/${productId}`
-  );
+  const response = await API.delete(`/expenses/${expenseId}/products/${productId}`);
   return response.data;
 };
 
@@ -126,20 +123,12 @@ export const deleteWithoutAmountExpense = async (id) => {
 };
 
 export const addProductToWithoutAmount = async (expenseId, productData) => {
-  const response = await API.post(
-    `/withoutAmount/${expenseId}/products`,
-    productData
-  );
+  const response = await API.post(`/withoutAmount/${expenseId}/products`, productData);
   return response.data;
 };
 
-export const deleteProductFromWithoutAmount = async (
-  expenseId,
-  productId
-) => {
-  const response = await API.delete(
-    `/withoutAmount/${expenseId}/products/${productId}`
-  );
+export const deleteProductFromWithoutAmount = async (expenseId, productId) => {
+  const response = await API.delete(`/withoutAmount/${expenseId}/products/${productId}`);
   return response.data;
 };
 
@@ -155,7 +144,7 @@ export const getCurrentUser = () => {
   try {
     return userStr ? JSON.parse(userStr) : null;
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return null;
   }
 };

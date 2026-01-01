@@ -7,12 +7,9 @@ import Register from "./pages/Register";
 import Navbar from "./component/Navbar";
 import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
-import CheckEmailLoading from "./pages/verification/CheckEmailLoading"; // Naya Page
-/* =============================================================
-    🔗 LINK VERIFICATION PAGE IMPORT (UPDATED)
-   ============================================================= */
-// Folder structure ke hisaab se import path check kar lein
-import EmailVerification from "./pages/verification/EmailVerification"; 
+import EmailVerification from './pages/verification/EmailVerification';
+import CheckEmailLoading from './pages/verification/CheckEmailLoading';
+
 
 function App() {
   return (
@@ -24,26 +21,20 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* =============================================================
-              🔗 NEW EMAIL VERIFICATION ROUTE (FIXED)
-              Yahan /:token lagana zaroori hai taaki URL se token read ho sake
-             ============================================================= */}
-          <Route path="/verify/:token" element={<EmailVerification />} />
-
-{/* ✅ Email Link Sent Success Page */}
-        <Route path="/check-email" element={<CheckEmailLoading />} />
-          {/* Home / Dashboard */}
+          {/* Public Routes (without authentication) */}
           <Route path="/" element={<Home />} />
-          
+          {/* ✅ Route path को Home.js में जैसे navigate कर रहे हैं वैसा ही करें */}
           <Route path="/with-ammount/:id" element={<WithAmount />} />
           <Route path="/without-amount/:id" element={<WithoutAmount />} />
-
+<Route path="/verify-email" element={<EmailVerification />} />
+ <Route path="/check-email" element={<CheckEmailLoading />} />         
           {/* Redirect to home if no route matches */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer/>
       </div>
     </Router>
+    
   );
 }
 

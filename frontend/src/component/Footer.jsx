@@ -5,20 +5,19 @@ import { Home, ListChecks, Mail, Users, Linkedin, Github, Twitter, Instagram, He
 
 function Footer() {
   const currentYear = new Date().getFullYear();
-  const creatorName = "Deepak"; // 💡 आपका नाम यहाँ Define किया गया
+  const creatorName = "Deepak";
 
   return (
-    // Outer Container: Dark background, light text, slight padding
+    // Outer Container: Responsive padding added
     <footer className="bg-gray-800 text-white mt-12 border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        {/* Top Section: Logo, Tagline, and Quick Links */}
+        {/* Top Section: Grid optimized for Mobile (2 columns) and Desktop (4 columns) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
           
           {/* 1. Brand Section */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-3">
-              {/* Logo: Indian Rupee Symbol (₹) */}
               <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
                 <span className="text-white font-extrabold text-xl leading-none pt-0.5">₹</span> 
               </div>
@@ -28,44 +27,44 @@ function Footer() {
               Simple. Secure. Smart Accounting.
             </p>
             
-            {/* 💡 Social Icons (Instagram Added) */}
+            {/* Social Icons (Slightly larger gap for mobile touch) */}
             <div className="flex space-x-4 mt-4">
-              <a href="#" target="_blank" aria-label="LinkedIn" className="text-gray-400 hover:text-indigo-400 transition">
+              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
                 <Linkedin size={20} />
               </a>
-              <a href="#" target="_blank" aria-label="GitHub" className="text-gray-400 hover:text-indigo-400 transition">
+              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
                 <Github size={20} />
               </a>
-              <a href="#" target="_blank" aria-label="Twitter" className="text-gray-400 hover:text-indigo-400 transition">
+              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
                 <Twitter size={20} />
               </a>
-              <a href="#" target="_blank" aria-label="Instagram" className="text-gray-400 hover:text-indigo-400 transition">
-                <Instagram size={20} /> {/* 💡 New Instagram Icon */}
+              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
+                <Instagram size={20} />
               </a>
             </div>
           </div>
           
-          {/* 2. Quick Links (Navigation) */}
-          <div>
+          {/* 2. Quick Links */}
+          <div className="col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-gray-400 hover:text-white flex items-center transition">
+                <Link to="/" className="text-gray-400 hover:text-white flex items-center transition text-sm">
                   <Home size={16} className="mr-2" /> Home
                 </Link>
               </li>
               <li>
-                <Link to="/expenses" className="text-gray-400 hover:text-white flex items-center transition">
+                <Link to="/expenses" className="text-gray-400 hover:text-white flex items-center transition text-sm">
                   <ListChecks size={16} className="mr-2" /> All Expenses
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-white flex items-center transition">
+                <Link to="/about" className="text-gray-400 hover:text-white flex items-center transition text-sm">
                   <Users size={16} className="mr-2" /> About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white flex items-center transition">
+                <Link to="/contact" className="text-gray-400 hover:text-white flex items-center transition text-sm">
                   <Mail size={16} className="mr-2" /> Contact
                 </Link>
               </li>
@@ -73,49 +72,51 @@ function Footer() {
           </div>
 
           {/* 3. Legal & Resources */}
-          <div>
+          <div className="col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Legal</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/privacy" className="text-gray-400 hover:text-white transition">
+                <Link to="/privacy" className="text-gray-400 hover:text-white transition text-sm">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-400 hover:text-white transition">
+                <Link to="/terms" className="text-gray-400 hover:text-white transition text-sm">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-gray-400 hover:text-white transition">
+                <Link to="/faq" className="text-gray-400 hover:text-white transition text-sm">
                   FAQ
                 </Link>
               </li>
             </ul>
           </div>
           
-          {/* 4. Contact Info (Placeholder) */}
+          {/* 4. Contact Info */}
           <div className="col-span-2 md:col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Get in Touch</h3>
             <p className="text-gray-400 text-sm">
                 Need support or have a partnership inquiry?
             </p>
-            <p className="text-white font-medium mt-2">
+            <p className="text-white font-medium mt-2 break-all text-sm">
                 support@hisaabkitab.com
             </p>
           </div>
           
         </div>
 
-        {/* Bottom Section: Copyright (Personalized for Deepak) */}
-        <div className="text-center text-sm text-gray-500 pt-4">
+        {/* Bottom Section */}
+        <div className="text-center text-sm text-gray-500 pt-4 px-2">
           <p>
             &copy; {currentYear} Hisaab. All rights reserved. 
           </p>
-          {/* 💡 Creator's Name Added */}
-          <p className="mt-1 flex items-center justify-center">
-            Designed and Developed by <span className="text-indigo-400 font-medium mx-1">{creatorName}</span> with <Heart size={14} className="text-red-500 mx-1" />.
-          </p>
+          <div className="mt-1 flex items-center justify-center flex-wrap">
+            <span>Designed and Developed by</span>
+            <span className="text-indigo-400 font-medium mx-1">{creatorName}</span>
+            <span>with</span>
+            <Heart size={14} className="text-red-500 mx-1 fill-current" />
+          </div>
         </div>
         
       </div>

@@ -9,30 +9,19 @@ import {
 } from "../api/allApi";
 
 // 💡 Lucide Icons
-import { ChevronLeft, Plus, Trash2, Loader2, BarChart3, Calendar, Tag, AlertTriangle, CheckCircle, Package } from 'lucide-react';
+import { ChevronLeft, Plus, Trash2, Loader2, BarChart3, Calendar, Tag, AlertTriangle, CheckCircle, Package, Printer } from 'lucide-react';
 
-// Indian Rupee Symbol for display
 const RupeeSymbol = "₹";
 
-// --- New Utility Function: Capitalize the first letter of each word ---
 const formatProductName = (name) => {
   if (!name) return '';
-  // Split the name by space, map over each word, capitalize the first letter, and rejoin.
-  return name
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  return name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
-// ------------------------------------------------------------------------
 
-// Utility function for formatting date
 const formatDate = (dateString) => {
   try {
     return new Date(dateString).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
-  } catch {
-    return 'N/A';
-  }
+  } catch { return 'N/A'; }
 };
 
 function WithAmount() {
@@ -45,16 +34,12 @@ function WithAmount() {
   const [error, setError] = useState("");
   const [addingProduct, setAddingProduct] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [deletingProductId, setDeletingProductId] = useState(null); // State for delete loading
+  const [deletingProductId, setDeletingProductId] = useState(null);
 
-  // Check auth (Original Logic Retained)
   useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate("/login");
-    }
+    if (!isAuthenticated()) { navigate("/login"); }
   }, [navigate]);
 
-  // Fetch expense data (Original Logic Retained)
   useEffect(() => {
     fetchExpense();
   }, [id]);
@@ -64,17 +49,14 @@ function WithAmount() {
       setLoading(true);
       setError("");
       const response = await getExpenseById(id);
+      if (response.success) { setExpense(response.data); }
+      else { setError("Expense not found or API failed."); }
+    } catch (err) { setError(err.message || "Failed to load expense"); }
+    finally { setLoading(false); }
+  };
 
-      if (response.success) {
-        setExpense(response.data);
-      } else {
-        setError("Expense not found or API failed.");
-      }
-    } catch (err) {
-      setError(err.message || "Failed to load expense");
-    } finally {
-      setLoading(false);
-    }
+  const handlePrint = () => {
+    window.print();
   };
 
   const handleAddProduct = async (data) => {
@@ -82,56 +64,37 @@ function WithAmount() {
       setAddingProduct(true);
       setError("");
       setSuccessMessage("");
-
       const response = await addProduct(id, {
         name: data.productName,
         amount: Number(data.productAmount),
         date: data.productDate || new Date().toISOString().split('T')[0]
       });
-
       if (response.success) {
         setSuccessMessage("Expense item added successfully!");
         reset();
-        fetchExpense(); // Refresh data
-        setTimeout(() => setSuccessMessage(""), 3000); // Clear success message
-      } else {
-        setError(response.message || "Failed to add product.");
-      }
-    } catch (err) {
-      setError(err.message || "Failed to add product");
-    } finally {
-      setAddingProduct(false);
-    }
+        fetchExpense();
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else { setError(response.message || "Failed to add product."); }
+    } catch (err) { setError(err.message || "Failed to add product"); }
+    finally { setAddingProduct(false); }
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm("🗑️ Are you sure you want to delete this expense item?")) {
-      return;
-    }
-
-    setDeletingProductId(productId); // Set loading state for this specific product
-
+    if (!window.confirm("🗑️ Are you sure you want to delete this expense item?")) { return; }
+    setDeletingProductId(productId);
     try {
       setSuccessMessage("");
       setError("");
-
       const response = await deleteProduct(id, productId);
-
       if (response.success) {
         setSuccessMessage("Expense item deleted successfully!");
-        fetchExpense(); // Refresh data
-        setTimeout(() => setSuccessMessage(""), 3000); // Clear success message
-      } else {
-        setError(response.message || "Failed to delete item.");
-      }
-    } catch (err) {
-      setError(err.message || "Failed to delete product");
-    } finally {
-      setDeletingProductId(null); // Clear loading state
-    }
+        fetchExpense();
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else { setError(response.message || "Failed to delete item."); }
+    } catch (err) { setError(err.message || "Failed to delete product"); }
+    finally { setDeletingProductId(null); }
   };
 
-  // --- LOADING / ERROR STATES ---
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -143,265 +106,119 @@ function WithAmount() {
     );
   }
 
-  if (error && !expense) {
-    return (
-      <div className="p-10 text-center bg-white rounded-xl shadow-lg m-10">
-        <AlertTriangle size={30} className="inline text-red-500 mb-3" />
-        <p className="text-red-600 font-semibold text-xl">{error}</p>
-        <button
-          onClick={() => navigate("/")}
-          className="mt-4 text-sm text-indigo-600 hover:text-indigo-800 flex items-center justify-center mx-auto"
-        >
-          <ChevronLeft size={16} className="mr-1" /> Back to Home
-        </button>
-      </div>
-    );
-  }
-
-  if (!expense) {
-    return (
-      <div className="p-10 text-center bg-white rounded-xl shadow-lg m-10">
-        <p className="text-red-600 font-semibold text-xl">Expense not found</p>
-      </div>
-    );
-  }
-
-  // --- CALCULATIONS ---
   const totalSpent = expense.products?.reduce((sum, p) => sum + Number(p.amount), 0) || 0;
   const remaining = expense.totalAmount - totalSpent;
   const isOverBudget = remaining < 0;
 
-  // --- STATS CARD COMPONENT (Inner cards keep their light color scheme) ---
   const StatsCard = ({ title, value, bgColor, valueColor }) => (
     <div
-      // This is the individual stat card, not the main container
-      className={`flex-1 p-5 rounded-xl shadow-lg text-center 
-                  border border-indigo-300 transition-all duration-300 
-                  hover:shadow-xl hover:shadow-indigo-300/50 hover:scale-[1.02]`}
+      className="flex-1 p-2 md:p-5 rounded-xl shadow-lg text-center border border-indigo-300"
       style={{ backgroundColor: bgColor }}
     >
-      <h2 className="text-base md:text-lg font-semibold text-gray-800 mb-2">
+      <h2 className="text-[10px] md:text-lg font-semibold text-gray-800 mb-1 leading-tight">
         {title}
       </h2>
-      <p className={`text-2xl md:text-3xl font-extrabold`} style={{ color: valueColor }}>
+      <p className="text-xs md:text-3xl font-extrabold truncate" style={{ color: valueColor }}>
         {RupeeSymbol}{Math.abs(value).toLocaleString('en-IN')}
       </p>
-      {(title === 'Remaining' && isOverBudget) && <span className="text-xs font-normal block text-red-600 mt-1">(Overspent)</span>}
+      {(title === 'Remaining' && isOverBudget) && <span className="text-[8px] md:text-xs font-normal block text-red-600 mt-1">(Over)</span>}
     </div>
   );
 
-
-  // --- PRODUCT LIST CARD COMPONENT for Horizontal Scroll (MODIFIED) ---
   const ProductCard = ({ p, handleDelete }) => {
     const isDeleting = deletingProductId === (p._id || p.id);
     return (
       <div
         key={p._id || p.id}
-        className={`min-w-[280px] w-[280px] p-4 bg-indigo-50 rounded-xl shadow-lg border-t-4 border-indigo-500 flex flex-col justify-between flex-shrink-0 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-300/50 ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
+        className={`min-w-[160px] md:min-w-[280px] p-3 md:p-4 bg-indigo-50 rounded-xl shadow-lg border-t-4 border-indigo-500 flex flex-col justify-between flex-shrink-0 transition-all ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
       >
-        <div className="space-y-2">
-          {/* Amount */}
-          <div className="font-extrabold text-3xl text-indigo-700">
+        <div className="space-y-1 md:space-y-2">
+          <div className="font-extrabold text-xl md:text-3xl text-indigo-700">
             {RupeeSymbol}{Number(p.amount).toLocaleString('en-IN')}
           </div>
-          
-          {/* Name - Applied Capitalization here */}
-          <p className="font-bold text-lg text-gray-900 flex items-center">
-            <Package size={18} className="mr-2 text-indigo-600" />
-            {formatProductName(p.name)} {/* <-- Applied formatProductName */}
+          <p className="font-bold text-xs md:text-lg text-gray-900 flex items-center truncate">
+            <Package size={14} className="mr-1 text-indigo-600 md:w-[18px] md:h-[18px]" /> 
+            {formatProductName(p.name)}
           </p>
-          
-          {/* Date */}
-          <p className="text-sm text-gray-500 flex items-center">
-            <Calendar size={12} className="mr-1" />
+          <p className="text-[10px] md:text-sm text-gray-500 flex items-center">
+            <Calendar size={10} className="mr-1 md:w-[12px] md:h-[12px]" /> 
             <span className="font-medium">{formatDate(p.date)}</span>
           </p>
         </div>
-
-        {/* Delete Button (Modified for smaller, cleaner look) */}
-        <div className="mt-4 pt-3 border-t border-indigo-200 flex justify-end">
-          <button
-            onClick={() => handleDelete(p._id || p.id)}
-            disabled={isDeleting}
-            className={`flex items-center justify-center p-2 rounded-full transition ${
-              isDeleting 
-              ? 'bg-red-300 cursor-wait' 
-              : 'bg-red-100 text-red-600 hover:bg-red-600 hover:text-white'
-            }`}
-            title="Delete Item"
-          >
-            {isDeleting ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <Trash2 size={16} />
-            )}
+        <div className="mt-3 md:mt-4 pt-2 border-t border-indigo-200 flex justify-end">
+          <button onClick={() => handleDelete(p._id || p.id)} disabled={isDeleting} className="p-1.5 md:p-2 rounded-full bg-red-100 text-red-600">
+            {isDeleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} className="md:w-4 md:h-4" />}
           </button>
         </div>
       </div>
     );
   };
 
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <style>{`@media print { .no-print { display: none !important; } }`}</style>
+      
       <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex justify-between items-center no-print">
+          <button onClick={() => navigate("/")} className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center transition-colors">
+            <ChevronLeft size={20} className="mr-1" /> Back
+          </button>
+          <button onClick={handlePrint} className="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-indigo-800 transition-all">
+            <Printer size={16} /> Print Report
+          </button>
+        </div>
 
-        {/* ⬅️ BACK BUTTON */}
-        <button
-          onClick={() => navigate("/")}
-          className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center transition-colors"
-        >
-          <ChevronLeft size={20} className="mr-1" /> Back to Expense List
-        </button>
-
-        {/* STATS SECTION (Back to previous style: bg-white, shadow-xl, border-gray-100) */}
-        <div 
-          className="bg-white p-6 shadow-xl rounded-3xl border border-gray-100"
-        >
-
-          {/* Expense Name */}
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4 border-b pb-4 border-gray-100">
+        {/* DASHBOARD */}
+        <div className="bg-white p-4 md:p-6 shadow-xl rounded-3xl border border-gray-100">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight mb-4 border-b pb-4 border-gray-100">
             <BarChart3 size={28} className="inline mr-3 text-indigo-600" />
             {formatProductName(expense.name) || "Expense Details"}
           </h1>
 
-          {/* RESPONSIVE STATS CONTAINER: grid-cols-3 */}
-          <div className="grid grid-cols-3 gap-3 md:gap-4">
-
-            {/* Total Amount (Light Theme Retained) */}
-            <StatsCard
-              title="Total Amount"
-              value={expense.totalAmount}
-              bgColor="#E6F0FF" // Light Blue/Indigo Background
-              valueColor="#4f46e5" // Indigo Text
-            />
-
-            {/* Remaining (Light Theme Retained) */}
-            <StatsCard
-              title="Remaining"
-              value={remaining}
-              bgColor="#E7F7E8" // Light Green Background
-              valueColor={isOverBudget ? "#dc2626" : "#10b981"} // Red if overspent, Green otherwise
-            />
-
-            {/* Spent (Light Theme Retained) */}
-            <StatsCard
-              title="Spent"
-              value={totalSpent}
-              bgColor="#FEEFEF" // Light Red/Pink Background
-              valueColor="#ef4444" // Red Text
-            />
+          <div className="grid grid-cols-3 gap-2 md:gap-4">
+            <StatsCard title="Total Amount" value={expense.totalAmount} bgColor="#E6F0FF" valueColor="#4f46e5" />
+            <StatsCard title="Remaining" value={remaining} bgColor="#E7F7E8" valueColor={isOverBudget ? "#dc2626" : "#10b981"} />
+            <StatsCard title="Spent" value={totalSpent} bgColor="#FEEFEF" valueColor="#ef4444" />
           </div>
         </div>
 
-        {/* --- MESSAGES --- */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center shadow-md">
-            <AlertTriangle size={20} className="mr-2" />
-            <span className="font-medium">{error}</span>
-          </div>
-        )}
-        {successMessage && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl flex items-center shadow-md">
-            <CheckCircle size={20} className="mr-2" />
-            <span className="font-medium">{successMessage}</span>
-          </div>
-        )}
-
-        {/* ADD PRODUCT FORM - ASHOKA CHAKRA BLUE BORDER (This is the only section with a colored border) */}
-        <div 
-          // Retained bg-white, shadow-xl, and added border-4 border-indigo-500
-          className="bg-white p-6 shadow-xl rounded-3xl border-4 border-indigo-500 transition-all duration-300 hover:shadow-indigo-200"
-        >
-          <h2 className="text-2xl font-bold text-gray-800 mb-5 border-b pb-3 border-indigo-100">
-            <Plus size={24} className="inline mr-2 text-indigo-600" /> Add New Expense
+        {/* ADD PRODUCT FORM (Responsive Text & Layout) */}
+        <div className="bg-white p-4 md:p-6 shadow-xl rounded-3xl border-4 border-indigo-500 no-print">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-800 mb-4 md:mb-5 border-b pb-3 border-indigo-100">
+            <Plus size={20} className="inline mr-2 text-indigo-600 md:w-6 md:h-6" /> Add New Expense
           </h2>
-          <form onSubmit={handleSubmit(handleAddProduct)} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-
-            {/* Product Name */}
+          <form onSubmit={handleSubmit(handleAddProduct)} className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 items-end">
             <div className="md:col-span-1">
-              <label className="text-sm font-medium text-gray-600 flex items-center mb-1">
-                <Tag size={14} className="mr-1 text-indigo-500" /> Product Name
-              </label>
-              <input
-                type="text"
-                placeholder="Product Name"
-                {...register("productName", { required: true })}
-                className="w-full border border-gray-300 p-3 rounded-xl focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 transition-colors"
-              />
+              <label className="text-[10px] md:text-sm font-medium text-gray-600 mb-1 block">Product Name</label>
+              <input type="text" placeholder="Name" {...register("productName", { required: true })} className="w-full border border-gray-300 p-2 md:p-3 rounded-xl text-sm" />
             </div>
-
-            {/* Amount */}
             <div className="md:col-span-1">
-              <label className="text-sm font-medium text-gray-600 flex items-center mb-1">
-                Amount ({RupeeSymbol})
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Amount"
-                {...register("productAmount", { required: true, min: 0 })}
-                className="w-full border border-gray-300 p-3 rounded-xl focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 transition-colors"
-              />
+              <label className="text-[10px] md:text-sm font-medium text-gray-600 mb-1 block">Amount</label>
+              <input type="number" step="0.01" placeholder="0" {...register("productAmount", { required: true, min: 0 })} className="w-full border border-gray-300 p-2 md:p-3 rounded-xl text-sm" />
             </div>
-
-            {/* Date */}
             <div className="md:col-span-1">
-              <label className="text-sm font-medium text-gray-600 flex items-center mb-1">
-                <Calendar size={14} className="mr-1 text-indigo-500" /> Date
-              </label>
-              <input
-                type="date"
-                defaultValue={new Date().toISOString().split('T')[0]}
-                {...register("productDate", { required: true })}
-                className="w-full border border-gray-300 p-3 rounded-xl focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 transition-colors"
-              />
+              <label className="text-[10px] md:text-sm font-medium text-gray-600 mb-1 block">Date</label>
+              <input type="date" defaultValue={new Date().toISOString().split('T')[0]} {...register("productDate", { required: true })} className="w-full border border-gray-300 p-2 md:p-3 rounded-xl text-sm" />
             </div>
-
-            {/* Submit Button */}
             <div className="md:col-span-1">
-              <button
-                type="submit"
-                disabled={addingProduct}
-                className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center ${addingProduct
-                    ? "bg-indigo-400 cursor-not-allowed"
-                    : "bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-300"
-                  } text-white`}
-              >
-                {addingProduct ? (
-                  <Loader2 size={20} className="animate-spin mr-2" />
-                ) : (
-                  <Plus size={20} className="mr-1" />
-                )}
-                {addingProduct ? "Adding..." : "Add Expense"}
+              <button type="submit" disabled={addingProduct} className="w-full py-2.5 md:py-3 rounded-xl font-semibold bg-indigo-600 text-white text-sm transition-all hover:bg-indigo-700 active:scale-95">
+                {addingProduct ? "..." : "Add Expense"}
               </button>
             </div>
           </form>
         </div>
 
-        {/* PRODUCT LIST (Back to previous style: bg-white, shadow-xl, border-gray-100) */}
-        <div 
-          className="bg-white p-6 shadow-xl rounded-3xl border border-gray-100"
-        >
-          <h2 className="text-2xl font-bold text-gray-800 mb-5 border-b pb-3 border-gray-100 flex items-center">
-            <BarChart3 size={24} className="mr-2 text-indigo-600" /> Expense History ({expense.products?.length || 0})
+        {/* HISTORY SECTION */}
+        <div className="bg-white p-5 md:p-6 shadow-xl rounded-3xl border border-gray-100">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-5 border-b pb-3 border-gray-100 flex items-center">
+            <BarChart3 size={24} className="mr-2 text-indigo-600" /> History ({expense.products?.length || 0})
           </h2>
-
           {!expense.products || expense.products.length === 0 ? (
-            <div className="p-4 text-center bg-gray-50 rounded-xl border border-gray-200">
-              <p className="text-gray-500 font-medium">No items logged for this expense yet. Start tracking!</p>
-            </div>
+            <div className="p-4 text-center bg-gray-50 rounded-xl"><p className="text-gray-500">No items logged yet.</p></div>
           ) : (
-            <div className="overflow-x-auto pb-4 -mx-2">
-              <div className="flex space-x-4 min-w-max px-2">
-                {/* Show latest item first */}
-                {expense.products.slice().reverse().map((p) => (
-                  <ProductCard
-                    key={p._id || p.id}
-                    p={p}
-                    handleDelete={handleDeleteProduct}
-                  />
-                ))}
+            <div className="overflow-x-auto pb-4">
+              <div className="flex space-x-3 px-1">
+                {expense.products.slice().reverse().map((p) => ( <ProductCard key={p._id || p.id} p={p} handleDelete={handleDeleteProduct} /> ))}
               </div>
             </div>
           )}

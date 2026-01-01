@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../api/allApi";
 import { motion } from "framer-motion";
-import { Mail, Lock, LogIn, TrendingUp, AlertCircle } from "lucide-react"; 
+import { Mail, Lock, LogIn, TrendingUp } from "lucide-react"; 
 import img1 from '../assets/loiniff.gif';
 
 // --- Animation Variants ---
@@ -27,13 +27,11 @@ function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isUnverified, setIsUnverified] = useState(false); // New state for verification check
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
       setError("");
-      setIsUnverified(false);
       
       const response = await loginUser({
         email: data.email,
@@ -41,24 +39,17 @@ function Login() {
       });
 
       if (response.success) {
-        // Data already saved in allApi.js logic, just navigate
+        // Token aur User data save karke seedha Dashboard bhejna
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data));
         navigate("/"); 
       } else {
         setError(response.message);
       }
     } catch (err) {
-      /* =============================================================
-          🔗 UNVERIFIED USER LOGIC (FIXED)
-          Ab hum OTP page par nahi bhejenge, balki wahi par ek 
-          "Verify your email" ka message dikhayenge.
-         ============================================================= */
-      if (err.response?.status === 401 || err.message?.toLowerCase().includes("verify")) {
-        setIsUnverified(true);
-        setError("आपका ईमेल वेरीफाई नहीं है। कृपया अपने इनबॉक्स में जाकर लिंक पर क्लिक करें।");
-        return;
-      }
-
-      setError(err.response?.data?.message || err.message || "Login failed");
+      // 🚀 LIVE: Agar user verified nahi hoga, toh backend se aane wala 
+      // error message (403 Forbidden) yahan error state mein dikhayi dega.
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -106,21 +97,11 @@ function Login() {
 
               {error && (
                   <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className={`mb-6 p-4 rounded-lg flex items-start gap-3 text-sm font-medium border ${
-                        isUnverified ? "bg-amber-50 text-amber-800 border-amber-200" : "bg-red-50 text-red-700 border-red-200"
-                      }`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mb-6 p-3 rounded-lg bg-red-50 text-red-700 text-sm font-medium border border-red-200"
                   >
-                      <AlertCircle size={20} className="shrink-0" />
-                      <div>
-                        {error}
-                        {isUnverified && (
-                          <div className="mt-2">
-                             <a href="https://mail.google.com" target="_blank" rel="noreferrer" className="underline font-bold">Open Gmail</a>
-                          </div>
-                        )}
-                      </div>
+                      {error}
                   </motion.div>
               )}
 
@@ -134,7 +115,7 @@ function Login() {
                               {...register("email", { required: true })}
                               type="email"
                               placeholder="Email Address"
-                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 transition"
                           />
                       </div>
                   </motion.div>
@@ -148,7 +129,7 @@ function Login() {
                               {...register("password", { required: true })}
                               type="password"
                               placeholder="••••••••"
-                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                              className="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 transition"
                           />
                       </div>
                   </motion.div>
@@ -172,7 +153,7 @@ function Login() {
               <motion.p className="mt-8 text-center text-sm text-gray-600" variants={formItem}>
                   Don't have an account?{" "}
                   <Link to="/register" className="text-indigo-600 font-semibold hover:underline transition">
-                    Register Here
+                      Register Here
                   </Link>
               </motion.p>
           </div>

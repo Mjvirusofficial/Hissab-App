@@ -1,30 +1,43 @@
+// src/pages/EmailVerification.jsx
+
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useParams use karein
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// 🌐 Config: Base URL mein '/api' check karein, agar aapne server.js mein nahi lagaya toh hata dein
-const BACKEND_BASE_URL = 'https://hissab-4ggc.onrender.com/auth'; 
+// सुनिश्चित करें कि आपका बैकएंड URL सही है (जैसे: जहां आपका Node/Express सर्वर चल रहा है)
+
+const BACKEND_BASE_URL = 'http://localhost:5000/api/auth'; 
+//For all devices:-
+// const BACKEND_BASE_URL = 'http://10.52.63.205:5000/api/auth';
 
 const EmailVerification = () => {
+    // 1. स्टेट्स (States)
     const [status, setStatus] = useState('ईमेल वेरीफाई किया जा रहा है... कृपया प्रतीक्षा करें।');
     const [isLoading, setIsLoading] = useState(true);
     
-    const { token } = useParams(); // ✅ FIX: URL params se token nikalne ke liye
-    const navigate = useNavigate(); 
+    // 2. हुक्स (Hooks)
+    const location = useLocation(); // URL की जानकारी के लिए
+    const navigate = useNavigate(); // रीडायरेक्ट करने के लिए
 
-    const verifyAccount = async (verificationToken) => {
+    // 3. वेरिफिकेशन फ़ंक्शन
+    const verifyAccount = async (token) => {
         setIsLoading(true);
         try {
-            // ✅ FIX: Backend route match kiya gaya hai (/auth/verify/:token)
-            const response = await axios.get(`${BACKEND_BASE_URL}/verify/${verificationToken}`);
-            
+            // बैकएंड के वेरिफिकेशन रूट को GET रिक्वेस्ट भेजना
+            // URL: http://localhost:5000/api/auth/verify-email/<token>
+            const response = await axios.get(`${BACKEND_BASE_URL}/verify-email/${token}`);
+
             if (response.data.success) {
                 setStatus('✅ सफलतापूर्वक वेरीफाई हुआ! अब आप लॉगिन कर सकते हैं।');
+                
+                // 5 सेकंड बाद लॉगिन पेज पर रीडायरेक्ट करें
                 setTimeout(() => {
                     navigate('/login');
                 }, 5000);
             }
+
         } catch (error) {
+            // बैकएंड से आने वाले एरर को हैंडल करना
             const errorMessage = error.response?.data?.message || 'वेरिफिकेशन विफल रहा। लिंक अमान्य हो सकता है।';
             setStatus(`❌ त्रुटि: ${errorMessage}`);
         } finally {
@@ -32,15 +45,26 @@ const EmailVerification = () => {
         }
     };
 
+    // 4. useEffect: कंपोनेंट लोड होने पर टोकन को पढ़ना और वेरीफाई करना
     useEffect(() => {
+        // URL से Query Parameter (token) को निकालना
+        const searchParams = new URLSearchParams(location.search);
+        const token = searchParams.get('token');
+
         if (token) {
+            // अगर टोकन मिल जाता है, तो वेरिफिकेशन प्रोसेस शुरू करें
             verifyAccount(token);
         } else {
+            // अगर URL में टोकन ही नहीं है
             setStatus('❌ वेरिफिकेशन विफल: URL में टोकन नहीं मिला।');
             setIsLoading(false);
         }
-    }, [token]); 
+        
+        // useEffect को केवल पहली बार लोड होने पर ही चलाना
+    }, [location]); 
 
+
+    // 5. रेंडरिंग (Rendering)
     return (
         <div style={{ 
             maxWidth: '600px', 
@@ -48,44 +72,37 @@ const EmailVerification = () => {
             padding: '20px', 
             textAlign: 'center',
             border: '1px solid #ccc',
-            borderRadius: '8px',
-            fontFamily: 'Arial, sans-serif'
+            borderRadius: '8px'
         }}>
             <h1>ईमेल वेरिफिकेशन</h1>
-            <hr />
-            
-            {isLoading && (
-                <div style={{ margin: '20px' }}>
-                    <p>⏳ लोड हो रहा है...</p>
-                </div>
-            )}
+            {isLoading && <p>लोड हो रहा है...</p>}
             
             <p style={{ 
                 marginTop: '20px', 
                 fontSize: '1.2em', 
-                fontWeight: 'bold',
-                color: status.includes('✅') ? '#28a745' : status.includes('❌') ? '#dc3545' : '#333'
+                fontWeight: 'bold' 
             }}>
                 {status}
             </p>
 
-            {status.includes('✅') && (
+            {status.includes('सफलतापूर्वक') && (
                 <button 
                     onClick={() => navigate('/login')}
-                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', cursor: 'pointer' }}
                 >
-                    तुरंत लॉगिन करें
+                    अब लॉगिन करें
                 </button>
             )}
             
-            {status.includes('❌') && (
-                <button 
+            {status.includes('त्रुटि') && (
+                 <button 
                     onClick={() => navigate('/register')}
-                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+                    style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', cursor: 'pointer' }}
                 >
                     रजिस्टर पेज पर वापस जाएँ
                 </button>
             )}
+
         </div>
     );
 };

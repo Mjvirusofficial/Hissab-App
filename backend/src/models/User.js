@@ -1,56 +1,59 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    otp: {
-      type: String,
-    },
-    otpExpire: {
-      type: Date,
-    },
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
   },
-  { timestamps: true }
-);
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
 
-// ==================== PASSWORD HASHING (FIXED) ====================
-// Modern Mongoose async pattern: Hum 'next' parameter ko hata rahe hain 
-// kyunki async functions me return hi kafi hota hai.
-userSchema.pre('save', async function () {
+  /* ==============================================================
+     🚀 LIVE SETTINGS (ABHI DISABLED HAIN)
+     Jab aap email verification live karenge, tab 'default: true' ko 
+     'default: false' kar dena aur niche wale fields ko use karna.
+     ==============================================================
+  */
+  isVerified: {
+    type: Boolean,
+    default: true, // Abhi ke liye true hai taaki bina verification login ho sake
+  },
+  // verificationToken: {
+  //   type: String, // Live ke waqt isko uncomment kar dena
+  // }
+  /* ============================================================== */
+
+}, {
+  timestamps: true 
+});
+
+// ⚡️ PASSWORD HASHING (Register ke waqt password encrypt karne ke liye)
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    return; // next() ki jagah seedha return
+    next();
   }
-  
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   } catch (error) {
-    throw new Error("Password hashing failed: " + error.message);
+    next(error);
   }
 });
 
-// Password match helper
+// ⚡️ MATCH PASSWORD (Login ke waqt password check karne ke liye)
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports = User;
