@@ -1,8 +1,6 @@
 import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
-// Ye line check karegi agar environment mein URL hai (Netlify/Production) 
-// warna local server use karegi
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const API = axios.create({
   baseURL: API_BASE_URL,
@@ -11,7 +9,7 @@ const API = axios.create({
   }
 });
 
-// Request Interceptor: Token automatically har request ke header mein jayega
+// Request Interceptor
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -20,7 +18,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Response Interceptor: 401 (Unauthorized) error par auto-logout
+// Response Interceptor
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -35,8 +33,15 @@ API.interceptors.response.use(
 
 // ==================== AUTH FUNCTIONS ====================
 
+// 1. Register: Ab ye activationToken return karega
 export const registerUser = async (userData) => {
   const response = await API.post('/auth/register', userData);
+  return response.data;
+};
+
+// 2. Login: Email/Password se login
+export const loginUser = async (credentials) => {
+  const response = await API.post('/auth/login', credentials);
   if (response.data.success && response.data.data?.token) {
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.data));
@@ -44,8 +49,9 @@ export const registerUser = async (userData) => {
   return response.data;
 };
 
-export const loginUser = async (credentials) => {
-  const response = await API.post('/auth/login', credentials);
+// 3. Verify OTP: otpData ab { otp, activationToken } receive karega
+export const verifyOTP = async (otpData) => {
+  const response = await API.post('/auth/verify-otp', otpData);
   if (response.data.success && response.data.data?.token) {
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.data));
@@ -64,7 +70,7 @@ export const logoutUser = () => {
   window.location.href = '/login';
 };
 
-// ==================== EXPENSE FUNCTIONS (WITH AMOUNT) ====================
+// ==================== EXPENSE FUNCTIONS (NO CHANGES) ====================
 
 export const getAllExpenses = async () => {
   const response = await API.get('/expenses');
@@ -96,7 +102,7 @@ export const deleteProduct = async (expenseId, productId) => {
   return response.data;
 };
 
-// ==================== WITHOUT AMOUNT FUNCTIONS ====================
+// ==================== WITHOUT AMOUNT FUNCTIONS (NO CHANGES) ====================
 
 export const getAllWithoutAmountExpenses = async () => {
   const response = await API.get('/withoutAmount');
@@ -128,7 +134,7 @@ export const deleteProductFromWithoutAmount = async (expenseId, productId) => {
   return response.data;
 };
 
-// ==================== UTILITY FUNCTIONS ====================
+// ==================== UTILITY FUNCTIONS (NO CHANGES) ====================
 
 export const isAuthenticated = () => {
   const token = localStorage.getItem('token');
@@ -140,7 +146,7 @@ export const getCurrentUser = () => {
   try {
     return userStr ? JSON.parse(userStr) : null;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return null;
   }
 };
