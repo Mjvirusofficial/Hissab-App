@@ -9,7 +9,7 @@ import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
 import EmailVerification from './pages/verification/EmailVerification';
 import CheckEmailLoading from './pages/verification/CheckEmailLoading';
-
+import './index.css';
 
 function App() {
   return (

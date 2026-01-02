@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@layer base {
+  button {
+    @apply cursor-pointer;
+  }
+}
+button:hover {
+  opacity: 0.9;
+  transition: 0.2s ease;
+  transform: translateY(-1px); /* Halka sa upar uthega */
+}
+
+button:active {
+  transform: translateY(0); /* Click karne par wapas niche aayega */
+}
