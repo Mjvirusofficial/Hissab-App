@@ -23,37 +23,45 @@ const formItem = {
 };
 
 function Login() {
+
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const onSubmit = async (data) => {
-    try {
-      setLoading(true);
-      setError("");
-      
-      const response = await loginUser({
-        email: data.email,
-        password: data.password
-      });
+  const onSubmit = async (data, e) => { // 'e' ko yahan add kiya
+    // 1. Browser refresh ko rokne ke liye
+    if (e) e.preventDefault(); 
 
-      if (response.success) {
-        // Token aur User data save karke seedha Dashboard bhejna
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data));
-        navigate("/"); 
-      } else {
-        setError(response.message);
-      }
+    try {
+        setLoading(true);
+        setError("");
+        
+        const response = await loginUser({
+            email: data.email,
+            password: data.password
+        });
+
+        if (response.success) {
+            // 2. Token aur User data save karna (Aapki allApi.js waise ye handle karti hai, 
+            // par manually karna safe hai)
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(response.data));
+
+            // 3. ⚡ SABSE ZAROORI: Navbar ko signal bhejna bina page refresh kiye
+            window.dispatchEvent(new Event("authChange"));
+
+            // 4. Dashboard par bhejna
+            navigate("/"); 
+        } else {
+            setError(response.message);
+        }
     } catch (err) {
-      // 🚀 LIVE: Agar user verified nahi hoga, toh backend se aane wala 
-      // error message (403 Forbidden) yahan error state mein dikhayi dega.
-      setError(err.message || "Login failed");
+        setError(err.response?.data?.message || "Login failed");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
   
   return (
     <motion.div
