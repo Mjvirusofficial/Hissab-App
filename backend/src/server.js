@@ -13,34 +13,29 @@ connectDB();
 
 const app = express();
 
-// ==================== UPDATED CORS (MOBILE & NEW EXPRESS COMPATIBLE) ====================
+// ==================== GLOBAL CORS (NO WILDCARDS) ====================
+// Is tareeke se 'path-to-regexp' ka error kabhi nahi aayega
 app.use(cors({
-  origin: true, // Sabhi origins allow honge, mobile debugging ke liye best hai
+  origin: true, 
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-/**
- * FIX: 'path-to-regexp' error solution
- * Naye Express versions mein '*' direct use karne par crash hota hai.
- * Isliye '(.*)' ka use kiya gaya hai.
- */
-app.options('(.*)', cors()); 
+// Purani line 'app.options('*', ...)' ko poori tarah hata diya gaya hai
+// Kyunki CORS middleware khud hi OPTIONS handle kar leta hai agar sahi se set ho.
 
 app.use(express.json());
 
 // ==================== ROUTES SETUP ====================
 
-// Note: Agar aapne frontend mein '/auth' use kiya hai toh wahi rakhein, 
-// '/api/auth' tabhi karein agar frontend mein bhi change kiya ho.
 app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use("/withoutAmount", withoutAmountRoutes);
 
-// Basic route for testing
+// Simple route without any special characters
 app.get('/', (req, res) => {
-  res.send('Expense Tracker API is running smoothly on Render!');
+  res.send('API is running perfectly!');
 });
 
 // ==================== ERROR HANDLING ====================
@@ -48,7 +43,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
     success: false, 
-    message: err.message || "Internal Server Error" 
+    message: "Something went wrong on the server" 
   });
 });
 
@@ -57,7 +52,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
 
 // const express = require('express');
 // const cors = require('cors');
