@@ -13,34 +13,43 @@ connectDB();
 
 const app = express();
 
-// ==================== EASY & FLEXIBLE CORS SETUP ====================
-// Taaki Mobile aur Laptop dono se request accept ho jaye
+// ==================== UPDATED CORS (MOBILE & NEW EXPRESS COMPATIBLE) ====================
 app.use(cors({
-  origin: true, // Yeh sabhi valid origins ko allow kar dega (Best for mobile debugging)
+  origin: true, // Sabhi origins allow honge, mobile debugging ke liye best hai
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// OPTIONS requests ko handle karna zaroori hai (Pre-flight)
-app.options('*', cors()); 
+/**
+ * FIX: 'path-to-regexp' error solution
+ * Naye Express versions mein '*' direct use karne par crash hota hai.
+ * Isliye '(.*)' ka use kiya gaya hai.
+ */
+app.options('(.*)', cors()); 
 
 app.use(express.json());
 
-// Routes Setup
-app.use('/api/auth', authRoutes); // Recommended: '/api' prefix lagana achha hota hai
-app.use('/api/expenses', expenseRoutes);
-app.use("/api/withoutAmount", withoutAmountRoutes);
+// ==================== ROUTES SETUP ====================
 
-// Basic route
+// Note: Agar aapne frontend mein '/auth' use kiya hai toh wahi rakhein, 
+// '/api/auth' tabhi karein agar frontend mein bhi change kiya ho.
+app.use('/auth', authRoutes);
+app.use('/expenses', expenseRoutes);
+app.use("/withoutAmount", withoutAmountRoutes);
+
+// Basic route for testing
 app.get('/', (req, res) => {
-  res.send('Expense Tracker API is running smoothly...');
+  res.send('Expense Tracker API is running smoothly on Render!');
 });
 
-// Error Handling
+// ==================== ERROR HANDLING ====================
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ success: false, message: "Internal Server Error" });
+  res.status(500).json({ 
+    success: false, 
+    message: err.message || "Internal Server Error" 
+  });
 });
 
 const PORT = process.env.PORT || 5000;
@@ -48,7 +57,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
 
 
 // const express = require('express');
