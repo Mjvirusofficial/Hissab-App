@@ -4,7 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../api/allApi";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, UserPlus, Zap } from "lucide-react"; 
-import img1 from '../assets/img2.gif' 
+import img1 from '../assets/img2.gif'; 
+
 
 // Animation Variants
 const mainContainer = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } } };
