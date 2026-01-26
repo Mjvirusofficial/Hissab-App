@@ -15,7 +15,12 @@ function Login() {
       setLoading(true);
       setError("");
       const user = await loginWithEmail(data.email, data.password);
+      const token = await user.getIdToken();
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      
+      // Dispatch auth change event for Navbar update
+      window.dispatchEvent(new Event("storage"));
       navigate("/");
     } catch (err) {
       setError(err.message);
@@ -27,7 +32,12 @@ function Login() {
   const handleGoogle = async () => {
     try {
       const user = await loginWithGoogle();
+      const token = await user.getIdToken();
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+
+      // Dispatch auth change event for Navbar update
+      window.dispatchEvent(new Event("storage"));
       navigate("/");
     } catch (err) {
       setError(err.message);
