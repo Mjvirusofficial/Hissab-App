@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
-// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API_BASE_URL = import.meta.env.REACT_APP_API_URL || 'https://hissab-4ggc.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+// const API_BASE_URL = import.meta.env.REACT_APP_API_URL || 'https://hissab-4ggc.onrender.com';
 
 const API = axios.create({
   baseURL: API_BASE_URL,
@@ -54,6 +54,16 @@ export const loginUser = async (credentials) => {
 // 3. Verify OTP: otpData ab { otp, activationToken } receive karega
 export const verifyOTP = async (otpData) => {
   const response = await API.post('/auth/verify-otp', otpData);
+  if (response.data.success && response.data.data?.token) {
+    localStorage.setItem('token', response.data.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.data));
+  }
+  return response.data;
+};
+
+// 4. Google/Firebase Login
+export const googleLogin = async (token) => {
+  const response = await API.post('/auth/google-login', { token });
   if (response.data.success && response.data.data?.token) {
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.data));
