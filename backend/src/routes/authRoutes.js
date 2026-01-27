@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { 
-    registerUser, 
-    loginUser, 
+const {
+    registerUser,
+    loginUser,
     getUserProfile,
     verifyOTP // ✅ Sahi function import kiya gaya hai
-} = require('../controllers/authController');
+, loginWithGoogle } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 // ================= PUBLIC ROUTES =================
@@ -18,6 +18,7 @@ router.post('/login', loginUser);
 
 // 3. OTP Verify karne ke liye (Backend controller ke verifyOTP function ko hit karega)
 router.post('/verify-otp', verifyOTP);
+router.post('/google-login', loginWithGoogle);
 
 // ================= PROTECTED ROUTES =================
 

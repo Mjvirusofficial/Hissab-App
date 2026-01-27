@@ -1,6 +1,9 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer'); 
+const nodemailer = require('nodemailer');
+const { OAuth2Client } = require('google-auth-library');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Token generator for final login and temporary activation
 const generateToken = (payload, expiry = '30d') => {
@@ -35,7 +38,7 @@ const registerUser = async (req, res) => {
             const transporter = nodemailer.createTransport({
                 host: process.env.EMAIL_HOST || 'smtp.gmail.com',
                 port: process.env.EMAIL_PORT || 465,
-                secure: true, 
+                secure: true,
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
@@ -97,14 +100,14 @@ const verifyOTP = async (req, res) => {
             isVerified: true
         });
 
-        res.status(201).json({ 
-            success: true, 
+        res.status(201).json({
+            success: true,
             message: 'Account Created & Verified!',
-            data: { 
-                _id: user._id, 
-                name: user.name, 
-                email: user.email, 
-                token: generateToken({ id: user._id }) 
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                token: generateToken({ id: user._id })
             }
         });
     } catch (err) {
@@ -137,6 +140,73 @@ const loginUser = async (req, res) => {
     }
 };
 
+// @desc Login with Google (Firebase Token)
+const loginWithGoogle = async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) return res.status(400).json({ success: false, message: 'Token required' });
+
+        // 1. Verify Firebase ID Token via Identity Toolkit API
+        // This works for ALL Firebase tokens (Google, Email, Phone) and doesn't require Admin SDK/Service Account.
+        const apiKey = process.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            console.error("FIREBASE_API_KEY missing in backend .env");
+            return res.status(500).json({ success: false, message: 'Server configuration error' });
+        }
+
+        const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+        const verifyUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`;
+
+        const response = await fetch(verifyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: token })
+        });
+
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("Firebase Verification Failed:", errData);
+            return res.status(401).json({ success: false, message: 'Invalid or Expired Token' });
+        }
+
+        const data = await response.json();
+        const firebaseUser = data.users[0];
+
+        const { email, displayName, localId } = firebaseUser;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Email not found in token' });
+        }
+
+        // 2. Find or Create User
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = await User.create({
+                name: displayName || 'User',
+                email,
+                password: localId, // Placeholder password
+                isVerified: true
+            });
+        }
+
+        // 3. Issue Custom JWT
+        res.json({
+            success: true,
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                token: generateToken({ id: user._id })
+            }
+        });
+
+    } catch (error) {
+        console.error("Google Login Error:", error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
 const getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select('-password');
@@ -146,4 +216,4 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, verifyOTP, loginUser, getUserProfile };
+module.exports = { registerUser, verifyOTP, loginUser, getUserProfile, loginWithGoogle };
