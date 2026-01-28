@@ -14,7 +14,7 @@ const CheckEmailLoading = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center">
-        
+
         {/* LEFT – Image */}
         <div className="flex justify-center">
           <motion.img
@@ -34,7 +34,7 @@ const CheckEmailLoading = () => {
 
           <p className="text-gray-600 mb-6 leading-relaxed">
             We’ve sent a verification link to your email address.
-            Please open your inbox and click the link to activate your account.
+            Please open your inbox or span folder and click the link to activate your account.
           </p>
 
           <div className="mb-6 rounded-lg bg-indigo-50 border border-indigo-100 px-4 py-3 text-indigo-700 font-medium">
