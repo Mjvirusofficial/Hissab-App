@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import WithAmount from "./pages/WithAmount";
 import Login from "./pages/Login";
@@ -13,6 +13,29 @@ import VerifyOTP from './pages/verification/VerifyOTP';
 
 import './index.css';
 
+// 🔒 Protected Route Component
+// Checks if token exists. If not, redirects to /login.
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  const location = useLocation();
+
+  if (!token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+};
+
+// 🔓 Public Route Component (Optional but good practice)
+// If already logged in, redirects to Dashboard instead of showing Login/Register
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
 function App() {
   return (
     <Router>
@@ -22,26 +45,41 @@ function App() {
         {/* Main Content Area */}
         <div className="flex-grow">
           <Routes>
-            {/* Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* Auth Routes (Public) - Wrapped to prevent access if already logged in */}
+            <Route path="/login" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            } />
 
-            {/* App Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/with-ammount/:id" element={<WithAmount />} />
-            <Route path="/without-amount/:id" element={<WithoutAmount />} />
+            {/* Protected App Routes */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } />
+            <Route path="/with-ammount/:id" element={
+              <ProtectedRoute>
+                <WithAmount />
+              </ProtectedRoute>
+            } />
+            <Route path="/without-amount/:id" element={
+              <ProtectedRoute>
+                <WithoutAmount />
+              </ProtectedRoute>
+            } />
 
             {/* ================= VERIFICATION ROUTES START ================= */}
-            {/* Yahan :token lagana zaroori hai taaki verification link se 
-               data uthaya ja sake 
-            */}
             <Route path="/verify-email/:token" element={<EmailVerification />} />
-
-            {/* Registration ke turant baad dikhane wala loading page */}
             <Route path="/check-email" element={<CheckEmailLoading />} />
             {/* ================= VERIFICATION ROUTES END ================== */}
             <Route path="/verify-otp" element={<VerifyOTP />} />
-            {/* 404 Redirect: Agar koi galat URL daale toh Home par bhej do */}
+            {/* 404 Redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
