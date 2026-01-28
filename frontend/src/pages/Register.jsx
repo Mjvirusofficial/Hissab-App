@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
+import { Zap, Mail } from "lucide-react";
 import img1 from "../assets/img2.gif";
 
 // Firebase Imports
 import { auth, googleProvider } from "../firebase/firebase";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification } from "firebase/auth";
 
 // API Import for Token Exchange
 import { googleLogin } from "../api/allApi";
@@ -17,6 +17,7 @@ function Register() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [verificationSent, setVerificationSent] = useState(false);
 
   const handleTokenExchange = async (token) => {
     try {
@@ -38,9 +39,16 @@ function Register() {
     try {
       setLoading(true);
       setError("");
+
+      // 1. Create User in Firebase
       const userCred = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      const token = await userCred.user.getIdToken();
-      await handleTokenExchange(token);
+
+      // 2. Send Verification Email
+      await sendEmailVerification(userCred.user);
+
+      setVerificationSent(true);
+      // We do NOT log them in yet. They must verify email first.
+
     } catch (err) {
       if (err.code === 'auth/email-already-in-use') {
         setError("Email already in use. Please login.");
@@ -54,7 +62,7 @@ function Register() {
     }
   };
 
-  // Google Signup
+  // Google Signup (Still works directly)
   const handleGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
@@ -64,6 +72,26 @@ function Register() {
       setError("Google Sign-In failed. Please try again.");
     }
   };
+
+  if (verificationSent) {
+    return (
+      <motion.div className="min-h-screen flex items-center justify-center bg-gray-50 p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
+          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <Mail className="w-8 h-8 text-green-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Verify your Email</h2>
+          <p className="text-gray-600 mb-6">
+            We have sent a verification link to your email address. <br />
+            Please check your inbox and click the link to activate your account.
+          </p>
+          <Link to="/login" className="block w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
+            Go to Login
+          </Link>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div className="min-h-screen flex flex-col md:flex-row w-full bg-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

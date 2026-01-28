@@ -7,7 +7,7 @@ import img1 from '../assets/loiniff.gif';
 
 // Firebase Imports
 import { auth, googleProvider } from "../firebase/firebase";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 
 // API Import
 import { googleLogin } from "../api/allApi";
@@ -53,13 +53,28 @@ function Login() {
       setLoading(true);
       setError("");
 
+      // 1. Sign In with Firebase
       const userCred = await signInWithEmailAndPassword(auth, data.email, data.password);
-      const token = await userCred.user.getIdToken();
+      const user = userCred.user;
+
+      // 2. Check if Email is Verified
+      if (!user.emailVerified) {
+        await signOut(auth); // Log them out immediately
+        setError("Please verify your email address to login.");
+        return;
+      }
+
+      // 3. If verified, proceed to backend login
+      const token = await user.getIdToken();
       await handleTokenExchange(token);
+
     } catch (err) {
-      setError(err.code === "auth/invalid-credential"
-        ? "Invalid email or password."
-        : "Login failed. Please try again.");
+      console.error(err);
+      if (err.code === "auth/invalid-credential" || err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
+        setError("Invalid email or password.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
