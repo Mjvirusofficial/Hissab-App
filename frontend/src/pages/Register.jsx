@@ -50,7 +50,7 @@ function Register() {
 
     } catch (err) {
       if (err.code === 'auth/email-already-in-use') {
-        setError("Email already in use. Please login.");
+        setError("Email already registered. Please Login. verify your email if needed.");
       } else if (err.code === 'auth/operation-not-allowed') {
         setError("Email/Password signup is not enabled. Please use Google.");
       } else {
