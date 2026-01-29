@@ -10,6 +10,9 @@ import Footer from "./component/Footer";
 import EmailVerification from './pages/verification/EmailVerification';
 import CheckEmailLoading from './pages/verification/CheckEmailLoading';
 import VerifyOTP from './pages/verification/VerifyOTP';
+// App.jsx or Routes.jsx
+import Profile from "./pages/Profile";
+
 
 import './index.css';
 
@@ -81,6 +84,8 @@ function App() {
             <Route path="/verify-otp" element={<VerifyOTP />} />
             {/* 404 Redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/profile" element={<Profile />} />
+
           </Routes>
         </div>
 
