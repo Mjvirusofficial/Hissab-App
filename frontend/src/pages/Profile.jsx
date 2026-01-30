@@ -70,7 +70,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* COVER */}
-      <div className="relative h-40 sm:h-56 md:h-64">
+      <div className="">
         <img
           src={cover || defaultCover}
           className="w-full h-full object-cover"
@@ -128,7 +128,7 @@ const Profile = () => {
           {/* EDIT PROFILE BUTTON */}
           <button
             onClick={() => setOpen(true)}
-            className="absolute top-4 right-4 px-4 py-2 rounded-lg border-2 border-indigo-600 text-black font-medium 
+            className=" absolute top-4 right-4 px-4 py-2 rounded-lg border-2 border-indigo-600 text-black font-medium 
                        hover:bg-indigo-600 hover:text-white transition-colors duration-300"
           >
             Edit Profile
@@ -171,7 +171,7 @@ const Profile = () => {
               exit={{ scale: 0.9 }}
               className="bg-white rounded-xl p-6 w-full max-w-lg"
             >
-              <h3 className="text-lg font-semibold mb-4">Edit Profile</h3>
+              <h3 className="text-lg font-semibold mb-10">Edit Profile</h3>
 
               {/* COVER */}
               <div
