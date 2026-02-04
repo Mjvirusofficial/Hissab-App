@@ -1,7 +1,7 @@
-// src/pages/Profile.jsx
 import React, { useEffect, useState } from "react";
-import { auth } from "../firebase/firebase";
+import { auth, storage } from "../firebase/firebase";
 import { updateProfile, updatePassword, onAuthStateChanged } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import storage methods
 import { motion, AnimatePresence } from "framer-motion";
 import defaultCover from "../assets/coverMj.png";
 
@@ -25,9 +25,11 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [cover, setCover] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null); // File state
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -43,16 +45,39 @@ const Profile = () => {
   const handleImage = (file, type) => {
     if (!file) return;
     const url = URL.createObjectURL(file);
-    type === "avatar" ? setAvatar(url) : setCover(url);
+    if (type === "avatar") {
+      setAvatar(url);
+      setAvatarFile(file); // File save karein upload ke liye
+    } else {
+      setCover(url);
+    }
   };
 
   const saveProfile = async () => {
-    await updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: avatar,
-    });
-    setMsg("✅ Profile updated successfully");
-    setOpen(false);
+    setLoading(true);
+    setMsg("⏳ Saving...");
+    try {
+      let finalAvatarUrl = avatar;
+
+      // Permanent Save Logic
+      if (avatarFile) {
+        const storageRef = ref(storage, `avatars/${user.uid}`);
+        await uploadBytes(storageRef, avatarFile);
+        finalAvatarUrl = await getDownloadURL(storageRef);
+      }
+
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        photoURL: finalAvatarUrl,
+      });
+
+      setMsg("✅ Profile updated successfully");
+      setOpen(false);
+    } catch (error) {
+      setMsg("❌ Error saving profile");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const changePassword = async () => {
@@ -69,13 +94,12 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* COVER */}
-      <div className="">
-        <img
-          src={cover || defaultCover}
-          className="w-full h-full object-cover"
-        />
-      </div>
+      {/* COVER - Fixed Rectangular Size */}
+      {/* <div className="w-full h-20 sm:h-48 md:h-64 bg-gray-300">        <img
+        src={cover || defaultCover}
+        className="w-full h-full object-cover" // Important: Fixed shape logic
+      />
+      </div> */}
 
       {/* PROFILE CARD */}
       <motion.div
@@ -99,14 +123,13 @@ const Profile = () => {
             </h2>
 
             <p className="text-gray-500">{user.email}</p>
-
             <p className="text-sm text-gray-400 mt-1">
               Joined {new Date(user.metadata.creationTime).toDateString()}
             </p>
 
             {/* BIO */}
             <p className="mt-3 text-gray-600 text-sm max-w-xl">
-              Managing expenses smarter with <b>Hisaab</b> 💸  
+              Managing expenses smarter with <b>Hisaab</b> 💸<br />
               Simple • Secure • Fast
             </p>
 
@@ -116,7 +139,7 @@ const Profile = () => {
               <Stat
                 title="Verified"
                 value={
-                  <span className="flex items-center gap-1 text-blue-600">
+                  <span className="flex items-center gap-1 text-green-800">
                     Yes <BlueTick />
                   </span>
                 }
@@ -126,13 +149,12 @@ const Profile = () => {
           </div>
 
           {/* EDIT PROFILE BUTTON */}
-          <button
+          {/* <button
             onClick={() => setOpen(true)}
-            className=" absolute top-4 right-4 px-4 py-2 rounded-lg border-2 border-indigo-600 text-black font-medium 
-                       hover:bg-indigo-600 hover:text-white transition-colors duration-300"
+            className=" absolute top-4 right-4 px-4 py-2 rounded-lg border-2 border-indigo-600 text-black font-medium hover:bg-indigo-600 hover:text-white transition-colors duration-300"
           >
             Edit Profile
-          </button>
+          </button> */}
         </div>
 
         {/* SECURITY */}
@@ -153,7 +175,7 @@ const Profile = () => {
           </button>
         </div>
 
-        {msg && <p className="mt-4 text-sm">{msg}</p>}
+        {msg && <p className="mt-4 text-sm font-medium text-indigo-600">{msg}</p>}
       </motion.div>
 
       {/* EDIT MODAL */}
@@ -175,15 +197,10 @@ const Profile = () => {
 
               {/* COVER */}
               <div
-                className="border-2 border-dashed rounded-lg h-28 flex items-center justify-center mb-4 cursor-pointer"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  handleImage(e.dataTransfer.files[0], "cover");
-                }}
+                className="border-2 border-dashed rounded-lg h-28 flex items-center justify-center mb-4 cursor-pointer overflow-hidden"
                 onClick={() => document.getElementById("coverInput").click()}
               >
-                Drag & drop cover image
+                {cover ? <img src={cover} className="w-full h-full object-cover" /> : "Drag & drop cover image"}
                 <input
                   id="coverInput"
                   type="file"
@@ -194,12 +211,7 @@ const Profile = () => {
 
               {/* AVATAR */}
               <div
-                className="border-2 border-dashed rounded-full w-28 h-28 mx-auto flex items-center justify-center mb-4 cursor-pointer"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  handleImage(e.dataTransfer.files[0], "avatar");
-                }}
+                className="border-2 border-dashed rounded-full w-28 h-28 mx-auto flex items-center justify-center mb-4 cursor-pointer overflow-hidden"
                 onClick={() => document.getElementById("avatarInput").click()}
               >
                 {avatar ? (
@@ -229,9 +241,10 @@ const Profile = () => {
                 <button onClick={() => setOpen(false)}>Cancel</button>
                 <button
                   onClick={saveProfile}
+                  disabled={loading}
                   className="bg-indigo-600 text-white px-4 py-2 rounded-lg"
                 >
-                  Save
+                  {loading ? "Saving..." : "Save"}
                 </button>
               </div>
             </motion.div>

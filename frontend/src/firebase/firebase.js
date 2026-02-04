@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getStorage} from "firebase/storage"; // 👈 Yeh line add karein
+import { getFirestore } from "firebase/firestore"; // Database ke liye (Is line ko check karein)
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,3 +18,5 @@ const app = initializeApp(firebaseConfig);
 // 👇 Yeh do line sabse important hain
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+export const storage = getStorage(app);
+export const db = getFirestore(app);
