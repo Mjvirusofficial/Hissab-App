@@ -6,11 +6,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Home, ListChecks, LogIn, UserPlus, LogOut, Menu, X, User } from "lucide-react";
 
 // Helper function to generate avatar if user doesn't have one
-const getAvatarUrl = (displayName, email, photoURL) => {
-  if (photoURL) return photoURL;
+const getAvatarUrl = (userData) => {
+  if (userData?.photoURL) return userData.photoURL;
 
-  const name = displayName || email || "User";
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true&size=200`;
+  const name = userData?.displayName || userData?.email || "U";
+  const firstLetter = name.charAt(0).toUpperCase();
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(firstLetter)}&backgroundColor=6366f1&fontWeight=700&fontSize=60&radius=50`;
 };
 
 function Navbar() {

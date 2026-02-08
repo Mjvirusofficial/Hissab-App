@@ -24,10 +24,9 @@ const Stat = ({ title, value }) => (
 const getAvatarUrl = (user) => {
   if (user?.photoURL) return user.photoURL;
 
-  // Generate avatar using UI Avatars API
-  const name = user?.displayName || user?.email || "User";
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true&size=200`;
+  // Use DiceBear API with stylish font for initials
+  const seed = user?.email || user?.displayName || "user";
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(seed)}&backgroundColor=6366f1&fontWeight=700&fontSize=48&radius=50`;
 };
 
 const Profile = () => {
@@ -53,6 +52,16 @@ const Profile = () => {
     return () => unsub();
   }, []);
 
+  // Update avatar when name changes
+  useEffect(() => {
+    if (user && name) {
+      // Only update if user doesn't have a custom uploaded photo
+      if (!user.photoURL || user.photoURL.includes('dicebear') || user.photoURL.includes('ui-avatars')) {
+        setAvatar(getAvatarUrl({ displayName: name, email: user.email }));
+      }
+    }
+  }, [name, user]);
+
   const handleImage = (file, type) => {
     if (!file) return;
 
@@ -77,20 +86,17 @@ const Profile = () => {
     setLoading(true);
     setMsg("⏳ Saving...");
     try {
-      let finalAvatarUrl = avatar;
-
-      // Upload base64 image to Firebase Storage (bypasses CORS)
-      if (avatarFile && typeof avatarFile === 'string' && avatarFile.startsWith('data:')) {
-        const storageRef = ref(storage, `avatars/${user.uid}`);
-        // Upload as base64 data URL
-        await uploadString(storageRef, avatarFile, 'data_url');
-        finalAvatarUrl = await getDownloadURL(storageRef);
-      }
+      // Generate avatar URL for the new name
+      const newAvatarURL = getAvatarUrl({ displayName: name, email: user.email });
 
       await updateProfile(auth.currentUser, {
         displayName: name,
-        photoURL: finalAvatarUrl,
+        photoURL: newAvatarURL,
       });
+
+      // Force update avatar immediately
+      setAvatar(newAvatarURL);
+      setUser({ ...user, displayName: name, photoURL: newAvatarURL });
 
       setMsg("✅ Profile updated successfully");
       setOpen(false);
@@ -133,7 +139,11 @@ const Profile = () => {
           {/* AVATAR */}
           <motion.img
             whileHover={{ scale: 1.05 }}
-            src={avatar}
+            src={avatar || (user ? getAvatarUrl({ displayName: name || user.displayName, email: user.email, photoURL: user.photoURL }) : "https://api.dicebear.com/7.x/initials/svg?seed=U&backgroundColor=6366f1&fontWeight=700&fontSize=60&radius=50")}
+            alt="Profile"
+            onError={(e) => {
+              e.target.src = "https://api.dicebear.com/7.x/initials/svg?seed=U&backgroundColor=6366f1&fontWeight=700&fontSize=60&radius=50";
+            }}
             className="w-28 h-28 rounded-full border-4 border-indigo-100 object-cover"
           />
 
@@ -217,38 +227,12 @@ const Profile = () => {
             >
               <h3 className="text-lg font-semibold mb-10">Edit Profile</h3>
 
-              {/* COVER */}
-              <div
-                className="border-2 border-dashed rounded-lg h-28 flex items-center justify-center mb-4 cursor-pointer overflow-hidden"
-                onClick={() => document.getElementById("coverInput").click()}
-              >
-                {cover ? <img src={cover} className="w-full h-full object-cover" /> : "Drag & drop cover image"}
-                <input
-                  id="coverInput"
-                  type="file"
-                  hidden
-                  onChange={(e) => handleImage(e.target.files[0], "cover")}
-                />
-              </div>
-
-              {/* AVATAR */}
-              <div
-                className="border-2 border-dashed rounded-full w-28 h-28 mx-auto flex items-center justify-center mb-4 cursor-pointer overflow-hidden"
-                onClick={() => document.getElementById("avatarInput").click()}
-              >
-                {avatar ? (
-                  <img
-                    src={avatar}
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  "Add photo"
-                )}
-                <input
-                  id="avatarInput"
-                  type="file"
-                  hidden
-                  onChange={(e) => handleImage(e.target.files[0], "avatar")}
+              {/* Avatar Preview - Shows first letter of name */}
+              <div className="w-28 h-28 mx-auto mb-6">
+                <img
+                  src={name ? `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name.charAt(0).toUpperCase())}&backgroundColor=6366f1&fontWeight=700&fontSize=60&radius=50` : avatar}
+                  className="w-full h-full rounded-full object-cover border-4 border-indigo-100"
+                  alt="Avatar Preview"
                 />
               </div>
 
