@@ -5,6 +5,14 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, ListChecks, LogIn, UserPlus, LogOut, Menu, X, User } from "lucide-react";
 
+// Helper function to generate avatar if user doesn't have one
+const getAvatarUrl = (displayName, email, photoURL) => {
+  if (photoURL) return photoURL;
+
+  const name = displayName || email || "User";
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true&size=200`;
+};
+
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);

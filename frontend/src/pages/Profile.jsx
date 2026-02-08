@@ -20,6 +20,16 @@ const Stat = ({ title, value }) => (
   </div>
 );
 
+// Helper function to generate avatar if user doesn't have one
+const getAvatarUrl = (user) => {
+  if (user?.photoURL) return user.photoURL;
+
+  // Generate avatar using UI Avatars API
+  const name = user?.displayName || user?.email || "User";
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true&size=200`;
+};
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
@@ -36,7 +46,8 @@ const Profile = () => {
       if (u) {
         setUser(u);
         setName(u.displayName || "");
-        setAvatar(u.photoURL || "");
+        // Use generated avatar if user doesn't have one
+        setAvatar(getAvatarUrl(u));
       }
     });
     return () => unsub();
@@ -122,7 +133,7 @@ const Profile = () => {
           {/* AVATAR */}
           <motion.img
             whileHover={{ scale: 1.05 }}
-            src={avatar || "https://i.pravatar.cc/200"}
+            src={avatar}
             className="w-28 h-28 rounded-full border-4 border-indigo-100 object-cover"
           />
 
