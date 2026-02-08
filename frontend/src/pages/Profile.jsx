@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, storage } from "../firebase/firebase";
 import { updateProfile, updatePassword, onAuthStateChanged } from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import storage methods
+import { ref, uploadString, getDownloadURL } from "firebase/storage"; // Import storage methods
 import { motion, AnimatePresence } from "framer-motion";
 import defaultCover from "../assets/coverMj.png";
 
@@ -44,10 +44,19 @@ const Profile = () => {
 
   const handleImage = (file, type) => {
     if (!file) return;
+
+    // Create preview URL
     const url = URL.createObjectURL(file);
+
     if (type === "avatar") {
       setAvatar(url);
-      setAvatarFile(file); // File save karein upload ke liye
+
+      // Convert to base64 for upload (fixes CORS issues)
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarFile(reader.result); // Store base64 string
+      };
+      reader.readAsDataURL(file);
     } else {
       setCover(url);
     }
@@ -59,10 +68,11 @@ const Profile = () => {
     try {
       let finalAvatarUrl = avatar;
 
-      // Permanent Save Logic
-      if (avatarFile) {
+      // Upload base64 image to Firebase Storage (bypasses CORS)
+      if (avatarFile && typeof avatarFile === 'string' && avatarFile.startsWith('data:')) {
         const storageRef = ref(storage, `avatars/${user.uid}`);
-        await uploadBytes(storageRef, avatarFile);
+        // Upload as base64 data URL
+        await uploadString(storageRef, avatarFile, 'data_url');
         finalAvatarUrl = await getDownloadURL(storageRef);
       }
 
@@ -74,7 +84,8 @@ const Profile = () => {
       setMsg("✅ Profile updated successfully");
       setOpen(false);
     } catch (error) {
-      setMsg("❌ Error saving profile");
+      console.error("Profile update error:", error);
+      setMsg("❌ Error: " + (error.message || "Failed to save profile"));
     } finally {
       setLoading(false);
     }
