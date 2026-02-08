@@ -32,6 +32,9 @@ function Navbar() {
           uid: currentUser.uid,
         });
       }
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
     };
 
     window.addEventListener("authChange", handleAuthChange);
