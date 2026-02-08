@@ -11,22 +11,22 @@ function Footer() {
     // Outer Container: Responsive padding added
     <footer className="bg-gray-800 text-white mt-12 border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        
+
         {/* Top Section: Grid optimized for Mobile (2 columns) and Desktop (4 columns) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
-          
+
           {/* 1. Brand Section */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-extrabold text-xl leading-none pt-0.5">₹</span> 
+                <span className="text-white font-extrabold text-xl leading-none pt-0.5">₹</span>
               </div>
-              <span className="text-2xl font-extrabold text-white">Hisaab</span>
+              <span className="text-2xl font-extrabold text-white">D-Hisaab</span>
             </Link>
             <p className="text-sm text-gray-400 mt-2">
               Simple. Secure. Smart Accounting.
             </p>
-            
+
             {/* Social Icons (Slightly larger gap for mobile touch) */}
             <div className="flex space-x-4 mt-4">
               <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
@@ -43,7 +43,7 @@ function Footer() {
               </a>
             </div>
           </div>
-          
+
           {/* 2. Quick Links */}
           <div className="col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
@@ -92,24 +92,24 @@ function Footer() {
               </li>
             </ul>
           </div>
-          
+
           {/* 4. Contact Info */}
           <div className="col-span-2 md:col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Get in Touch</h3>
             <p className="text-gray-400 text-sm">
-                Need support or have a partnership inquiry?
+              Need support or have a partnership inquiry?
             </p>
             <p className="text-white font-medium mt-2 break-all text-sm">
-                support@hisaabkitab.com
+              support@hisaabkitab.com
             </p>
           </div>
-          
+
         </div>
 
         {/* Bottom Section */}
         <div className="text-center text-sm text-gray-500 pt-4 px-2">
           <p>
-            &copy; {currentYear} Hisaab. All rights reserved. 
+            &copy; {currentYear} D-Hisaab. All rights reserved.
           </p>
           <div className="mt-1 flex items-center justify-center flex-wrap">
             <span>Designed and Developed by</span>
@@ -118,7 +118,7 @@ function Footer() {
             <Heart size={14} className="text-red-500 mx-1 fill-current" />
           </div>
         </div>
-        
+
       </div>
     </footer>
   );

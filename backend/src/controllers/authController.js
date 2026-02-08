@@ -48,7 +48,7 @@ const registerUser = async (req, res) => {
             await transporter.sendMail({
                 from: process.env.EMAIL_USER,
                 to: email,
-                subject: 'Hisaab App - Your OTP Code',
+                subject: 'D-Hisaab App - Your OTP Code',
                 html: `<div style="font-family: Arial; padding: 20px;">
                         <h2>Verify Your Email</h2>
                         <h1 style="background: #f4f4f4; text-align: center; letter-spacing: 10px;">${otp}</h1>

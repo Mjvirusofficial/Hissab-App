@@ -110,7 +110,7 @@ function Navbar() {
                 <span className="text-white font-extrabold text-xl leading-none pt-0.5">₹</span>
               </div>
               <span className="text-xl font-extrabold text-gray-800 group-hover:text-indigo-600 transition">
-                Hisaab
+                D-Hisaab
               </span>
             </Link>
           </div>

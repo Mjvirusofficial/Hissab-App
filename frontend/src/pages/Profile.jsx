@@ -161,7 +161,7 @@ const Profile = () => {
 
             {/* BIO */}
             <p className="mt-3 text-gray-600 text-sm max-w-xl">
-              Managing expenses smarter with <b>Hisaab</b> 💸<br />
+              Managing expenses smarter with <b>D-Hisaab</b> 💸<br />
               Simple • Secure • Fast
             </p>
 
