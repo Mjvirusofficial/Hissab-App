@@ -11,6 +11,24 @@ function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check localStorage first for persisted auth
+    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+
+    if (token && storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser({
+          name: userData.user?.name || userData.displayName || "User",
+          email: userData.user?.email || userData.email,
+          uid: userData.user?.id || userData.uid,
+        });
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+      }
+    }
+
+    // Listen to Firebase auth state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser({
@@ -19,22 +37,31 @@ function Navbar() {
           uid: currentUser.uid,
         });
       } else {
-        setUser(null);
+        // Only clear user if there's no token in localStorage
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setUser(null);
+        }
       }
     });
 
+    // Listen for login events to update navbar
     const handleAuthChange = () => {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        setUser({
-          name: currentUser.displayName || "User",
-          email: currentUser.email,
-          uid: currentUser.uid,
-        });
+      const token = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
+
+      if (token && storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          setUser({
+            name: userData.user?.name || userData.displayName || "User",
+            email: userData.user?.email || userData.email,
+            uid: userData.user?.id || userData.uid,
+          });
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
       }
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
     };
 
     window.addEventListener("authChange", handleAuthChange);
@@ -46,10 +73,19 @@ function Navbar() {
   }, []);
 
   const handleLogout = async () => {
+    // Clear localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Sign out from Firebase
     await signOut(auth);
+
+    // Clear local state
     setUser(null);
-    navigate("/login");
     setIsMenuOpen(false);
+
+    // Navigate to login
+    navigate("/login");
   };
 
   const navLinkClass =
