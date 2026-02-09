@@ -120,7 +120,7 @@ function Navbar() {
             {user ? (
               <>
                 <Link to="/" className={navLinkClass}><Home size={18} className="mr-1.5" /> Home</Link>
-                <Link to="/expenses" className={navLinkClass}><ListChecks size={18} className="mr-1.5" /> All Expenses</Link>
+                {/* <Link to="/expenses" className={navLinkClass}><ListChecks size={18} className="mr-1.5" /> All Expenses</Link> */}
                 <Link to="/profile" className={navLinkClass}><User size={18} className="mr-1.5" /> Profile</Link>
 
                 <Link to="/tutorial" className={navLinkClass}><BookOpen size={18} className="mr-1.5" /> Tutorial</Link>
