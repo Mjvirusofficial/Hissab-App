@@ -12,6 +12,9 @@ import CheckEmailLoading from './pages/verification/CheckEmailLoading';
 import VerifyOTP from './pages/verification/VerifyOTP';
 // App.jsx or Routes.jsx
 import Profile from "./pages/Profile";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import Tutorial from "./pages/Tutorial";
 
 
 import './index.css';
@@ -76,6 +79,11 @@ function App() {
                 <WithoutAmount />
               </ProtectedRoute>
             } />
+
+            {/* Public Pages */}
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/tutorial" element={<Tutorial />} />
 
             {/* ================= VERIFICATION ROUTES START ================= */}
             <Route path="/verify-email/:token" element={<EmailVerification />} />

@@ -12,8 +12,8 @@ function Footer() {
     <footer className="bg-gray-800 text-white mt-12 border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        {/* Top Section: Grid optimized for Mobile (2 columns) and Desktop (4 columns) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
+        {/* Top Section: Grid optimized for Mobile (2 columns) and Desktop (3 columns) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-b border-gray-700 pb-8 mb-8">
 
           {/* 1. Brand Section */}
           <div className="col-span-2 md:col-span-1">
@@ -29,16 +29,13 @@ function Footer() {
 
             {/* Social Icons (Slightly larger gap for mobile touch) */}
             <div className="flex space-x-4 mt-4">
-              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
+              <a href="https://www.linkedin.com/in/deepak-ravidas-65956a388/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-400 transition">
                 <Linkedin size={20} />
               </a>
-              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
+              <a href="https://github.com/Mjvirusofficial/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-400 transition">
                 <Github size={20} />
               </a>
-              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
-                <Twitter size={20} />
-              </a>
-              <a href="#" target="_blank" className="text-gray-400 hover:text-indigo-400 transition">
+              <a href="https://www.instagram.com/0ye_its_deepak/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition">
                 <Instagram size={20} />
               </a>
             </div>
@@ -72,7 +69,8 @@ function Footer() {
           </div>
 
           {/* 3. Legal & Resources */}
-          <div className="col-span-1">
+          {/* TODO: Future Implementation - Uncomment when pages are ready */}
+          {/* <div className="col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Legal</h3>
             <ul className="space-y-3">
               <li>
@@ -91,7 +89,7 @@ function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* 4. Contact Info */}
           <div className="col-span-2 md:col-span-1">
@@ -100,7 +98,8 @@ function Footer() {
               Need support or have a partnership inquiry?
             </p>
             <p className="text-white font-medium mt-2 break-all text-sm">
-              support@hisaabkitab.com
+              hisaab204@gmail.com
+
             </p>
           </div>
 

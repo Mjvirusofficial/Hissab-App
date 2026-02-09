@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, ListChecks, LogIn, UserPlus, LogOut, Menu, X, User } from "lucide-react";
+import { Home, ListChecks, LogIn, UserPlus, LogOut, Menu, X, User, Phone, Info, BookOpen } from "lucide-react";
 
 // Helper function to generate avatar if user doesn't have one
 const getAvatarUrl = (userData) => {
@@ -120,14 +120,16 @@ function Navbar() {
             {user ? (
               <>
                 <Link to="/" className={navLinkClass}><Home size={18} className="mr-1.5" /> Home</Link>
-                <Link to="/profile" className={navLinkClass}><User size={18} className="mr-1.5" /> Profile</Link>
                 <Link to="/expenses" className={navLinkClass}><ListChecks size={18} className="mr-1.5" /> All Expenses</Link>
+                <Link to="/profile" className={navLinkClass}><User size={18} className="mr-1.5" /> Profile</Link>
+
+                <Link to="/tutorial" className={navLinkClass}><BookOpen size={18} className="mr-1.5" /> Tutorial</Link>
+                <Link to="/contact" className={navLinkClass}><Phone size={18} className="mr-1.5" /> Contact Us</Link>
+                <Link to="/about" className={navLinkClass}><Info size={18} className="mr-1.5" /> About Us</Link>
+
 
                 <div className="flex items-center space-x-4 ml-4">
-                  <div className="text-sm text-gray-600 flex items-center">
-                    <User size={18} className="mr-1 text-indigo-500" />
-                    Hello, <span className="font-bold ml-1 text-indigo-700 uppercase">{user.name}</span>
-                  </div>
+
                   <button
                     onClick={handleLogout}
                     className="flex items-center bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-red-600 transition shadow-md hover:shadow-lg"
@@ -138,6 +140,9 @@ function Navbar() {
               </>
             ) : (
               <>
+                <Link to="/tutorial" className={navLinkClass}><BookOpen size={18} className="mr-1.5" /> Tutorial</Link>
+                <Link to="/about" className={navLinkClass}><Info size={18} className="mr-1.5" /> About</Link>
+                <Link to="/contact" className={navLinkClass}><Phone size={18} className="mr-1.5" /> Contact</Link>
                 <Link to="/login" className={navLinkClass}><LogIn size={18} className="mr-1.5" /> Login</Link>
                 <Link to="/register" className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shadow-md shadow-indigo-300/50 hover:shadow-lg">
                   <UserPlus size={18} className="mr-1.5" /> Register
@@ -168,17 +173,21 @@ function Navbar() {
               {user ? (
                 <>
                   <Link to="/" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><Home size={18} className="mr-2 text-indigo-500" /> Home</Link>
+                  <Link to="/tutorial" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><BookOpen size={18} className="mr-2 text-indigo-500" /> Tutorial</Link>
+                  <Link to="/about" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><Info size={18} className="mr-2 text-indigo-500" /> About</Link>
+                  <Link to="/contact" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><Phone size={18} className="mr-2 text-indigo-500" /> Contact</Link>
                   <Link to="/profile" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><User size={18} className="mr-2 text-indigo-500" /> Profile</Link>
                   <Link to="/expenses" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><ListChecks size={18} className="mr-2 text-indigo-500" /> All Expenses</Link>
 
-                  <div className="px-3 py-2 text-gray-700 border-t mt-1 pt-3">
-                    Hello, <span className="font-bold text-indigo-600 uppercase">{user.name}</span>
-                  </div>
+
 
                   <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-red-600 rounded-md hover:bg-red-50 transition">Logout</button>
                 </>
               ) : (
                 <>
+                  <Link to="/tutorial" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><BookOpen size={18} className="mr-2 text-indigo-500" /> Tutorial</Link>
+                  <Link to="/about" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><Info size={18} className="mr-2 text-indigo-500" /> About</Link>
+                  <Link to="/contact" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><Phone size={18} className="mr-2 text-indigo-500" /> Contact</Link>
                   <Link to="/login" className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-indigo-50 transition" onClick={() => setIsMenuOpen(false)}><LogIn size={18} className="mr-2 text-indigo-500" /> Login</Link>
                   <Link to="/register" className="flex items-center px-3 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition" onClick={() => setIsMenuOpen(false)}><UserPlus size={18} className="mr-2" /> Register</Link>
                 </>
