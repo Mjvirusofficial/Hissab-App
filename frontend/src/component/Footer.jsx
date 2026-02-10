@@ -69,8 +69,7 @@ function Footer() {
           </div>
 
           {/* 3. Legal & Resources */}
-          {/* TODO: Future Implementation - Uncomment when pages are ready */}
-          {/* <div className="col-span-1">
+          <div className="col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Legal</h3>
             <ul className="space-y-3">
               <li>
@@ -89,7 +88,7 @@ function Footer() {
                 </Link>
               </li>
             </ul>
-          </div> */}
+          </div>
 
           {/* 4. Contact Info */}
           <div className="col-span-2 md:col-span-1">

@@ -1,26 +1,32 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import Home from "./pages/Home";
-import WithAmount from "./pages/WithAmount";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import React, { Suspense, lazy } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Navbar from "./component/Navbar";
-import WithoutAmount from "./pages/WithOutAmount";
 import Footer from "./component/Footer";
-import EmailVerification from './pages/verification/EmailVerification';
-import CheckEmailLoading from './pages/verification/CheckEmailLoading';
-import VerifyOTP from './pages/verification/VerifyOTP';
-// App.jsx or Routes.jsx
-import Profile from "./pages/Profile";
-import Contact from "./pages/Contact";
-import About from "./pages/About";
-import Tutorial from "./pages/Tutorial";
-
-
+import Loading from "./component/Loading";
+import PageWrapper from "./component/PageWrapper";
 import './index.css';
 
+// Lazy Load Pages
+const Home = lazy(() => import("./pages/Home"));
+const WithAmount = lazy(() => import("./pages/WithAmount"));
+const WithoutAmount = lazy(() => import("./pages/WithOutAmount"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Contact = lazy(() => import("./pages/Contact"));
+const About = lazy(() => import("./pages/About"));
+const Tutorial = lazy(() => import("./pages/Tutorial"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+
+// Verification Pages
+const EmailVerification = lazy(() => import('./pages/verification/EmailVerification'));
+const CheckEmailLoading = lazy(() => import('./pages/verification/CheckEmailLoading'));
+const VerifyOTP = lazy(() => import('./pages/verification/VerifyOTP'));
+
 // 🔒 Protected Route Component
-// Checks if token exists. If not, redirects to /login.
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   const location = useLocation();
@@ -32,8 +38,7 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// 🔓 Public Route Component (Optional but good practice)
-// If already logged in, redirects to Dashboard instead of showing Login/Register
+// 🔓 Public Route Component
 const PublicRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -43,63 +48,83 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  const location = useLocation();
+
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Navbar />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar />
 
-        {/* Main Content Area */}
-        <div className="flex-grow">
-          <Routes>
-            {/* Auth Routes (Public) - Wrapped to prevent access if already logged in */}
-            <Route path="/login" element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            } />
-            <Route path="/register" element={
-              <PublicRoute>
-                <Register />
-              </PublicRoute>
-            } />
+      {/* Main Content Area */}
+      <div className="flex-grow">
+        <Suspense fallback={<Loading />}>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              {/* Auth Routes (Public) */}
+              <Route path="/login" element={
+                <PublicRoute>
+                  <PageWrapper>
+                    <Login />
+                  </PageWrapper>
+                </PublicRoute>
+              } />
+              <Route path="/register" element={
+                <PublicRoute>
+                  <PageWrapper>
+                    <Register />
+                  </PageWrapper>
+                </PublicRoute>
+              } />
 
-            {/* Protected App Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            } />
-            <Route path="/with-ammount/:id" element={
-              <ProtectedRoute>
-                <WithAmount />
-              </ProtectedRoute>
-            } />
-            <Route path="/without-amount/:id" element={
-              <ProtectedRoute>
-                <WithoutAmount />
-              </ProtectedRoute>
-            } />
+              {/* Protected App Routes */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <PageWrapper>
+                    <Home />
+                  </PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/with-ammount/:id" element={
+                <ProtectedRoute>
+                  <PageWrapper>
+                    <WithAmount />
+                  </PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/without-amount/:id" element={
+                <ProtectedRoute>
+                  <PageWrapper>
+                    <WithoutAmount />
+                  </PageWrapper>
+                </ProtectedRoute>
+              } />
 
-            {/* Public Pages */}
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/tutorial" element={<Tutorial />} />
+              {/* Public Pages */}
+              <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+              <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+              <Route path="/tutorial" element={<PageWrapper><Tutorial /></PageWrapper>} />
+              <Route path="/privacy" element={<PageWrapper><PrivacyPolicy /></PageWrapper>} />
+              <Route path="/terms" element={<PageWrapper><TermsOfService /></PageWrapper>} />
+              <Route path="/faq" element={<PageWrapper><FAQ /></PageWrapper>} />
 
-            {/* ================= VERIFICATION ROUTES START ================= */}
-            <Route path="/verify-email/:token" element={<EmailVerification />} />
-            <Route path="/check-email" element={<CheckEmailLoading />} />
-            {/* ================= VERIFICATION ROUTES END ================== */}
-            <Route path="/verify-otp" element={<VerifyOTP />} />
-            {/* 404 Redirect */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-            <Route path="/profile" element={<Profile />} />
+              {/* Verification Routes */}
+              <Route path="/verify-email/:token" element={<PageWrapper><EmailVerification /></PageWrapper>} />
+              <Route path="/check-email" element={<PageWrapper><CheckEmailLoading /></PageWrapper>} />
+              <Route path="/verify-otp" element={<PageWrapper><VerifyOTP /></PageWrapper>} />
 
-          </Routes>
-        </div>
+              {/* Temporary Loading Demo Route */}
+              <Route path="/test-loading" element={<Loading />} />
 
-        <Footer />
+              {/* 404 Redirect */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
+
+            </Routes>
+          </AnimatePresence>
+        </Suspense>
       </div>
-    </Router>
+
+      <Footer />
+    </div>
   );
 }
 
