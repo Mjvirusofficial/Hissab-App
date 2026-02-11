@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { Calendar, Clock, ChevronRight, Search, Tag, X } from 'lucide-react';
 import SEO from '../component/SEO';
 import { useNavigate } from 'react-router-dom';
+import AdBanner from '../component/AdBanner';
 
 import { blogPosts } from '../data/blogData';
 
@@ -145,6 +146,12 @@ const Blog = () => {
                     </div>
                 )}
 
+                {/* Blog Grid Ad */}
+                <AdBanner
+                    adKey="6c0ab509883060c6141aaca15f8e84ad"
+                    width={300}
+                    height={250}
+                />
             </div>
         </div>
     );

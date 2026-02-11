@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AdBanner from './AdBanner';
 // 💡 Icons updated to include Instagram
 import { Home, ListChecks, Mail, Users, Linkedin, Github, Twitter, Instagram, Heart } from 'lucide-react';
 
@@ -122,6 +123,12 @@ function Footer() {
           </div>
         </div>
 
+        {/* Footer Ad */}
+        <AdBanner
+          adKey="f8458e013e16aa03cfc068939f35a723"
+          width={320}
+          height={50}
+        />
       </div>
     </footer>
   );

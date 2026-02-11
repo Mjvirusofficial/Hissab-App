@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, User, Clock, ArrowLeft, Share2 } from 'lucide-react';
 import SEO from '../component/SEO';
+import AdBanner from '../component/AdBanner';
 import { blogPosts } from '../data/blogData';
 
 const BlogPost = () => {
@@ -65,6 +66,13 @@ const BlogPost = () => {
                     <div className="prose prose-lg prose-indigo max-w-none text-gray-600">
                         {post.content}
                     </div>
+
+                    {/* Blog Post Ad */}
+                    <AdBanner
+                        adKey="66d6e5c4a06df69d5994607ac60ce6f5"
+                        width={468}
+                        height={60}
+                    />
                 </div>
 
                 {/* Footer/Navigation */}
