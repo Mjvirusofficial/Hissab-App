@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Send, MessageSquare, User, Phone } from 'lucide-react';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { Send, MessageSquare, User } from 'lucide-react';
 import SEO from '../component/SEO';
 
 const Contact = () => {

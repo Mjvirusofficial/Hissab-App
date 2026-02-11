@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { auth, storage } from "../firebase/firebase";
+import { auth } from "../firebase/firebase";
 import { updateProfile, updatePassword, onAuthStateChanged } from "firebase/auth";
-import { ref, uploadString, getDownloadURL } from "firebase/storage"; // Import storage methods
-import { motion, AnimatePresence } from "framer-motion";
-import defaultCover from "../assets/coverMj.png";
+// import { ref, uploadString, getDownloadURL } from "firebase/storage"; // Import storage methods
+import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
+// import defaultCover from "../assets/coverMj.png";
 
 /* 🔵 Blue Tick */
 const BlueTick = () => (
@@ -33,8 +33,8 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
-  const [cover, setCover] = useState("");
-  const [avatarFile, setAvatarFile] = useState(null); // File state
+  // const [cover, setCover] = useState("");
+  // const [avatarFile, setAvatarFile] = useState(null); // File state
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [open, setOpen] = useState(false);
@@ -62,7 +62,7 @@ const Profile = () => {
     }
   }, [name, user]);
 
-  const handleImage = (file, type) => {
+  /* const handleImage = (file, type) => {
     if (!file) return;
 
     // Create preview URL
@@ -80,7 +80,7 @@ const Profile = () => {
     } else {
       setCover(url);
     }
-  };
+  }; */
 
   const saveProfile = async () => {
     setLoading(true);

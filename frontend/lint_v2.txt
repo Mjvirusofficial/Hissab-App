@@ -1,0 +1,360 @@
+﻿
+> vite-project@0.0.0 lint
+> eslint .
+
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\component\Loading.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\component\Navbar.jsx
+   5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  23:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  21 |       try {
+  22 |         const userData = JSON.parse(storedUser);
+> 23 |         setUser({
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  24 |           name: userData.user?.name || userData.displayName || "User",
+  25 |           email: userData.user?.email || userData.email,
+  26 |           uid: userData.user?.id || userData.uid,  react-hooks/set-state-in-effect
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\component\PageWrapper.jsx
+   2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  34:40  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  32 |     // Use useMemo to pick a random variant only once on mount per instance
+  33 |     const variants = useMemo(() => {
+> 34 |         const randomIndex = Math.floor(Math.random() * variantsList.length);
+     |                                        ^^^^^^^^^^^^^ Cannot call impure function
+  35 |         return variantsList[randomIndex];
+  36 |     }, []);
+  37 |  react-hooks/purity
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\context\AuthContext.jsx
+  33:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  31 |       try {
+  32 |         const userData = JSON.parse(storedUser);
+> 33 |         setUser(userData);
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  34 |       } catch (error) {
+  35 |         console.error("Error parsing stored user:", error);
+  36 |         localStorage.removeItem("token");  react-hooks/set-state-in-effect
+  71:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-refresh/only-export-components
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\About.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Blog.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Contact.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Dashboard.jsx
+   41:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   52:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+   68:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   84:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   95:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+  105:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+  109:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  107 |
+  108 |   useEffect(() => {
+> 109 |     fetchExpenses();
+      |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  110 |     fetchWithoutAmountExpenses();
+  111 |   }, []);
+  112 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/set-state-in-effect
+  126:35  error  'Icon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  204:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  202 |
+  203 |         <div className="flex justify-center gap-2 mb-8 bg-gray-200/50 backdrop-blur-sm rounded-2xl p-1.5 w-full max-w-md mx-auto">
+> 204 |           <TabButton tab="withAmount" icon={TrendingUp} colorClass="ring-indigo-500 text-indigo-600" mainText="Expense Planner" subText="(Budget)" />
+      |            ^^^^^^^^^ This component is created during render
+  205 |           <TabButton tab="withoutAmount" icon={FileText} colorClass="ring-lime-500 text-lime-600" mainText="Expense Tracker" subText="(Daily)" />
+  206 |         </div>
+  207 |
+
+  124 |
+  125 |   // --- UI COMPONENTS ---
+> 126 |   const TabButton = ({ tab, icon: Icon, colorClass, mainText, subText }) => (
+      |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 127 |     <button
+      | ^^^^^^^^^^^
+> 128 |       className={`flex items-center justify-center flex-1 px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${activeTab === tab
+      ΓÇª
+      | ^^^^^^^^^^^
+> 139 |     </button>
+      | ^^^^^^^^^^^
+> 140 |   );
+      | ^^^^ The component is created during render here
+  141 |
+  142 |   const FormContainer = ({ children, isLeft, color }) => (
+  143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>                                                                                                          react-hooks/static-components
+  205:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  203 |         <div className="flex justify-center gap-2 mb-8 bg-gray-200/50 backdrop-blur-sm rounded-2xl p-1.5 w-full max-w-md mx-auto">
+  204 |           <TabButton tab="withAmount" icon={TrendingUp} colorClass="ring-indigo-500 text-indigo-600" mainText="Expense Planner" subText="(Budget)" />
+> 205 |           <TabButton tab="withoutAmount" icon={FileText} colorClass="ring-lime-500 text-lime-600" mainText="Expense Tracker" subText="(Daily)" />
+      |            ^^^^^^^^^ This component is created during render
+  206 |         </div>
+  207 |
+  208 |         {activeTab === "withAmount" ? (
+
+  124 |
+  125 |   // --- UI COMPONENTS ---
+> 126 |   const TabButton = ({ tab, icon: Icon, colorClass, mainText, subText }) => (
+      |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 127 |     <button
+      | ^^^^^^^^^^^
+> 128 |       className={`flex items-center justify-center flex-1 px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${activeTab === tab
+      ΓÇª
+      | ^^^^^^^^^^^
+> 139 |     </button>
+      | ^^^^^^^^^^^
+> 140 |   );
+      | ^^^^ The component is created during render here
+  141 |
+  142 |   const FormContainer = ({ children, isLeft, color }) => (
+  143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>                                                                  react-hooks/static-components
+  209:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  207 |
+  208 |         {activeTab === "withAmount" ? (
+> 209 |           <FormContainer isLeft={true} color="indigo">
+      |            ^^^^^^^^^^^^^ This component is created during render
+  210 |             <div className="flex items-center mb-4 border-b pb-3 border-indigo-50">
+  211 |               <TrendingUp size={20} className="text-indigo-600 mr-2" />
+  212 |               <h2 className="text-sm md:text-2xl font-bold text-gray-800">Create Budgeted Expense</h2>
+
+  140 |   );
+  141 |
+> 142 |   const FormContainer = ({ children, isLeft, color }) => (
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 144 |       <div className={`${isLeft ? 'md:order-1' : 'md:order-2'} order-1 w-full`}>
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 154 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 155 |   );
+      | ^^^^ The component is created during render here
+  156 |
+  157 |   const HistoryCard = ({ expense, isBudgeted, handleDelete, navigateTo }) => {
+  158 |     const spent = calculateTotalSpent(expense);  react-hooks/static-components
+  227:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  225 |           </FormContainer>
+  226 |         ) : (
+> 227 |           <FormContainer isLeft={false} color="lime">
+      |            ^^^^^^^^^^^^^ This component is created during render
+  228 |             <div className="flex items-center mb-4 border-b pb-3 border-lime-50">
+  229 |               <FileText size={20} className="text-lime-600 mr-2" />
+  230 |               <h2 className="text-sm md:text-2xl font-bold text-gray-800">Create Daily Expenses</h2>
+
+  140 |   );
+  141 |
+> 142 |   const FormContainer = ({ children, isLeft, color }) => (
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 144 |       <div className={`${isLeft ? 'md:order-1' : 'md:order-2'} order-1 w-full`}>
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 154 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 155 |   );
+      | ^^^^ The component is created during render here
+  156 |
+  157 |   const HistoryCard = ({ expense, isBudgeted, handleDelete, navigateTo }) => {
+  158 |     const spent = calculateTotalSpent(expense);          react-hooks/static-components
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Home.jsx
+   41:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   52:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+   68:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   84:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   95:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+  105:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+  109:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  107 |
+  108 |   useEffect(() => {
+> 109 |     fetchExpenses();
+      |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  110 |     fetchWithoutAmountExpenses();
+  111 |   }, []);
+  112 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/set-state-in-effect
+  126:35  error  'Icon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  204:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  202 |
+  203 |         <div className="flex justify-center gap-2 mb-8 bg-gray-200/50 backdrop-blur-sm rounded-2xl p-1.5 w-full max-w-md mx-auto">
+> 204 |           <TabButton tab="withAmount" icon={TrendingUp} colorClass="ring-indigo-500 text-indigo-600" mainText="Expense Planner" subText="(Budget)" />
+      |            ^^^^^^^^^ This component is created during render
+  205 |           <TabButton tab="withoutAmount" icon={FileText} colorClass="ring-lime-500 text-lime-600" mainText="Expense Tracker" subText="(Daily)" />
+  206 |         </div>
+  207 |
+
+  124 |
+  125 |   // --- UI COMPONENTS ---
+> 126 |   const TabButton = ({ tab, icon: Icon, colorClass, mainText, subText }) => (
+      |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 127 |     <button
+      | ^^^^^^^^^^^
+> 128 |       className={`flex items-center justify-center flex-1 px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${activeTab === tab
+      ΓÇª
+      | ^^^^^^^^^^^
+> 139 |     </button>
+      | ^^^^^^^^^^^
+> 140 |   );
+      | ^^^^ The component is created during render here
+  141 |
+  142 |   const FormContainer = ({ children, isLeft, color }) => (
+  143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>                                                                                                          react-hooks/static-components
+  205:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  203 |         <div className="flex justify-center gap-2 mb-8 bg-gray-200/50 backdrop-blur-sm rounded-2xl p-1.5 w-full max-w-md mx-auto">
+  204 |           <TabButton tab="withAmount" icon={TrendingUp} colorClass="ring-indigo-500 text-indigo-600" mainText="Expense Planner" subText="(Budget)" />
+> 205 |           <TabButton tab="withoutAmount" icon={FileText} colorClass="ring-lime-500 text-lime-600" mainText="Expense Tracker" subText="(Daily)" />
+      |            ^^^^^^^^^ This component is created during render
+  206 |         </div>
+  207 |
+  208 |         {activeTab === "withAmount" ? (
+
+  124 |
+  125 |   // --- UI COMPONENTS ---
+> 126 |   const TabButton = ({ tab, icon: Icon, colorClass, mainText, subText }) => (
+      |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 127 |     <button
+      | ^^^^^^^^^^^
+> 128 |       className={`flex items-center justify-center flex-1 px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${activeTab === tab
+      ΓÇª
+      | ^^^^^^^^^^^
+> 139 |     </button>
+      | ^^^^^^^^^^^
+> 140 |   );
+      | ^^^^ The component is created during render here
+  141 |
+  142 |   const FormContainer = ({ children, isLeft, color }) => (
+  143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>                                                                  react-hooks/static-components
+  209:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  207 |
+  208 |         {activeTab === "withAmount" ? (
+> 209 |           <FormContainer isLeft={true} color="indigo">
+      |            ^^^^^^^^^^^^^ This component is created during render
+  210 |             <div className="flex items-center mb-4 border-b pb-3 border-indigo-50">
+  211 |               <TrendingUp size={20} className="text-indigo-600 mr-2" />
+  212 |               <h2 className="text-sm md:text-2xl font-bold text-gray-800">Create Budgeted Expense</h2>
+
+  140 |   );
+  141 |
+> 142 |   const FormContainer = ({ children, isLeft, color }) => (
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 144 |       <div className={`${isLeft ? 'md:order-1' : 'md:order-2'} order-1 w-full`}>
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 154 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 155 |   );
+      | ^^^^ The component is created during render here
+  156 |
+  157 |   const HistoryCard = ({ expense, isBudgeted, handleDelete, navigateTo }) => {
+  158 |     const spent = calculateTotalSpent(expense);  react-hooks/static-components
+  227:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  225 |           </FormContainer>
+  226 |         ) : (
+> 227 |           <FormContainer isLeft={false} color="lime">
+      |            ^^^^^^^^^^^^^ This component is created during render
+  228 |             <div className="flex items-center mb-4 border-b pb-3 border-lime-50">
+  229 |               <FileText size={20} className="text-lime-600 mr-2" />
+  230 |               <h2 className="text-sm md:text-2xl font-bold text-gray-800">Create Daily Expenses</h2>
+
+  140 |   );
+  141 |
+> 142 |   const FormContainer = ({ children, isLeft, color }) => (
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 143 |     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-6 md:mb-16`}>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 144 |       <div className={`${isLeft ? 'md:order-1' : 'md:order-2'} order-1 w-full`}>
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 154 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 155 |   );
+      | ^^^^ The component is created during render here
+  156 |
+  157 |   const HistoryCard = ({ expense, isBudgeted, handleDelete, navigateTo }) => {
+  158 |     const spent = calculateTotalSpent(expense);          react-hooks/static-components
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Login.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Profile.jsx
+  5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Register.jsx
+   4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  70:14  error  'err' is defined but never used                                                no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Tutorial.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\WithAmount.jsx
+  34:10  error  'error' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\WithOutAmount.jsx
+  117:30  error  'Icon' is defined but never used  no-unused-vars
+
+Γ£û 41 problems (41 errors, 0 warnings)
+

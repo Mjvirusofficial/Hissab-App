@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 
 const variantsList = [
     {
@@ -29,11 +29,11 @@ const variantsList = [
 ];
 
 const PageWrapper = ({ children }) => {
-    // Use useMemo to pick a random variant only once on mount per instance
-    const variants = useMemo(() => {
+    // Use useState to pick a random variant only once on mount per instance
+    const [variants] = React.useState(() => {
         const randomIndex = Math.floor(Math.random() * variantsList.length);
         return variantsList[randomIndex];
-    }, []);
+    });
 
     return (
         <motion.div

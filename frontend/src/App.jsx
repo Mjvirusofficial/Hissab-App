@@ -5,6 +5,7 @@ import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
 import Loading from "./component/Loading";
 import PageWrapper from "./component/PageWrapper";
+import ScrollToTop from "./component/ScrollToTop";
 import './index.css';
 
 // Lazy Load Pages
@@ -55,6 +56,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
+      <ScrollToTop />
 
       {/* Main Content Area */}
       <div className="flex-grow">

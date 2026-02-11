@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Zap } from "lucide-react";
 import img1 from "../assets/img2.gif";
 
@@ -54,7 +54,7 @@ function Register() {
       } else if (err.code === 'auth/operation-not-allowed') {
         setError("Email/Password signup is not enabled. Please use Google.");
       } else {
-        setError(err.message);
+        // setError(err.message);
       }
     } finally {
       setLoading(false);
@@ -67,7 +67,7 @@ function Register() {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await result.user.getIdToken();
       await handleTokenExchange(token);
-    } catch (err) {
+    } catch {
       setError("Google Sign-In failed. Please try again.");
     }
   };

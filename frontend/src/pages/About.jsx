@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Github, Twitter, Linkedin, Heart, Instagram } from 'lucide-react';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { Github, Linkedin, Heart, Instagram } from 'lucide-react';
 import DR from '../assets/DR.png';
 import SEO from '../component/SEO';
 

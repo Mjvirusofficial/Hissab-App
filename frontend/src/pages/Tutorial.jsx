@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Wallet, Edit3, Download, Globe, CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { Wallet, Edit3, Download, CheckCircle } from 'lucide-react';
 
 const Tutorial = () => {
     const [language, setLanguage] = useState('hinglish');
@@ -160,8 +160,8 @@ const Tutorial = () => {
                                 key={lang}
                                 onClick={() => setLanguage(lang)}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all capitalize ${language === lang
-                                        ? 'bg-indigo-600 text-white shadow-md'
-                                        : 'text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-indigo-600 text-white shadow-md'
+                                    : 'text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
                                 {lang}

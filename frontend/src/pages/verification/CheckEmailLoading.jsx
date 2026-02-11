@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import gmailImg from "../../assets/Gmail.png";
 
 const CheckEmailLoading = () => {
@@ -17,13 +17,14 @@ const CheckEmailLoading = () => {
 
         {/* LEFT – Image */}
         <div className="flex justify-center">
-          <motion.img
-            src={gmailImg}
-            alt="Email Verification"
-            className="w-[320px] mt-4"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity }}
-          />
+          {/* <motion.img
+              src={gmailImg}
+              alt="Email Verification"
+              className="w-[320px] mt-4"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
+            /> */}
+          <img src={gmailImg} alt="Email Verification" className="w-[320px] mt-4" />
         </div>
 
         {/* RIGHT – Content */}

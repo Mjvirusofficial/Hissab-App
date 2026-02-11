@@ -8,7 +8,7 @@ import {
 import { format } from 'date-fns';
 
 // 💡 Lucide Icons
-import { ChevronLeft, Plus, BarChart3, Package, Calendar, TrendingUp, Trash2, Loader2, Clock, ScrollText, Printer } from 'lucide-react'; 
+import { ChevronLeft, Plus, BarChart3, Package, Calendar, TrendingUp, Trash2, Loader2, Clock, ScrollText, Printer } from 'lucide-react';
 
 const RupeeSymbol = "₹";
 
@@ -27,7 +27,7 @@ function WithoutAmount() {
   const [productName, setProductName] = useState('');
   const [productAmount, setProductAmount] = useState('');
   const [totalSpent, setTotalSpent] = useState(0);
-  const [deletingProductId, setDeletingProductId] = useState(null);
+  // const [deletingProductId, setDeletingProductId] = useState(null);
 
   const updateExpenseState = useCallback((data) => {
     setExpense(data);
@@ -81,12 +81,12 @@ function WithoutAmount() {
 
   const handleDeleteProduct = useCallback(async (productId) => {
     if (!window.confirm('Are you sure?')) return;
-    setDeletingProductId(productId);
+    // setDeletingProductId(productId);
     try {
       const response = await deleteProductFromWithoutAmount(id, productId);
       if (response.success) await fetchExpense();
     } finally {
-      setDeletingProductId(null);
+      // setDeletingProductId(null);
     }
   }, [id, fetchExpense]);
 
@@ -114,6 +114,7 @@ function WithoutAmount() {
 
   if (loading) return <div className="min-h-screen flex justify-center items-center"><Loader2 className="animate-spin text-indigo-600" /></div>;
 
+  // eslint-disable-next-line no-unused-vars
   const StatsCard = ({ icon: Icon, title, value, bgColor, valueColor }) => (
     <div className={`p-4 md:p-5 rounded-2xl shadow-sm text-center transition-all duration-300 hover:shadow-lg`} style={{ backgroundColor: bgColor }}>
       <Icon size={20} className="mx-auto mb-2" style={{ color: valueColor }} />
@@ -143,11 +144,11 @@ function WithoutAmount() {
           <button onClick={() => navigate('/')} className="flex items-center text-indigo-600 font-medium transition text-sm">
             <ChevronLeft size={20} /> Back
           </button>
-          
+
           {/* Print Button: Grey BG, Lime Hover */}
-         <button onClick={handlePrint} className="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-lime-500 hover:text-black transition-all">
-                     <Printer size={16} /> Print Report
-                   </button>
+          <button onClick={handlePrint} className="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-lime-500 hover:text-black transition-all">
+            <Printer size={16} /> Print Report
+          </button>
         </div>
 
         {/* Stats Section (Restored) */}
@@ -206,8 +207,8 @@ function WithoutAmount() {
                   <div key={product._id} className="min-w-[180px] md:min-w-[220px] p-3 md:p-4 bg-indigo-50 rounded-xl border-t-4 border-lime-500 shadow-sm flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-center text-[9px] md:text-[10px] text-indigo-500 font-bold mb-1">
-                        <span className="flex items-center gap-1"><Calendar size={10}/> {formatDate(product.date)}</span>
-                        <span className="flex items-center gap-1"><Clock size={10}/> {formatTime(product.date)}</span>
+                        <span className="flex items-center gap-1"><Calendar size={10} /> {formatDate(product.date)}</span>
+                        <span className="flex items-center gap-1"><Clock size={10} /> {formatTime(product.date)}</span>
                       </div>
                       <span className="font-bold text-xs md:text-base text-gray-800 break-words line-clamp-2">
                         {formatProductName(product.name)}

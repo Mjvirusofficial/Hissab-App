@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Calendar, User, Clock, ChevronRight, Search, Tag, X } from 'lucide-react';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { Calendar, Clock, ChevronRight, Search, Tag, X } from 'lucide-react';
 import SEO from '../component/SEO';
 import { useNavigate } from 'react-router-dom';
 

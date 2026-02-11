@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // सुनिश्चित करें कि आपका बैकएंड URL सही है (जैसे: जहां आपका Node/Express सर्वर चल रहा है)
 
-const BACKEND_BASE_URL = 'http://localhost:5000/api/auth'; 
+const BACKEND_BASE_URL = 'http://localhost:5000/api/auth';
 //For all devices:-
 // const BACKEND_BASE_URL = 'http://10.52.63.205:5000/api/auth';
 
@@ -14,7 +14,7 @@ const EmailVerification = () => {
     // 1. स्टेट्स (States)
     const [status, setStatus] = useState('ईमेल वेरीफाई किया जा रहा है... कृपया प्रतीक्षा करें।');
     const [isLoading, setIsLoading] = useState(true);
-    
+
     // 2. हुक्स (Hooks)
     const location = useLocation(); // URL की जानकारी के लिए
     const navigate = useNavigate(); // रीडायरेक्ट करने के लिए
@@ -29,7 +29,7 @@ const EmailVerification = () => {
 
             if (response.data.success) {
                 setStatus('✅ सफलतापूर्वक वेरीफाई हुआ! अब आप लॉगिन कर सकते हैं।');
-                
+
                 // 5 सेकंड बाद लॉगिन पेज पर रीडायरेक्ट करें
                 setTimeout(() => {
                     navigate('/login');
@@ -59,43 +59,44 @@ const EmailVerification = () => {
             setStatus('❌ वेरिफिकेशन विफल: URL में टोकन नहीं मिला।');
             setIsLoading(false);
         }
-        
+
         // useEffect को केवल पहली बार लोड होने पर ही चलाना
-    }, [location]); 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location]);
 
 
     // 5. रेंडरिंग (Rendering)
     return (
-        <div style={{ 
-            maxWidth: '600px', 
-            margin: '50px auto', 
-            padding: '20px', 
+        <div style={{
+            maxWidth: '600px',
+            margin: '50px auto',
+            padding: '20px',
             textAlign: 'center',
             border: '1px solid #ccc',
             borderRadius: '8px'
         }}>
             <h1>ईमेल वेरिफिकेशन</h1>
             {isLoading && <p>लोड हो रहा है...</p>}
-            
-            <p style={{ 
-                marginTop: '20px', 
-                fontSize: '1.2em', 
-                fontWeight: 'bold' 
+
+            <p style={{
+                marginTop: '20px',
+                fontSize: '1.2em',
+                fontWeight: 'bold'
             }}>
                 {status}
             </p>
 
             {status.includes('सफलतापूर्वक') && (
-                <button 
+                <button
                     onClick={() => navigate('/login')}
                     style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', cursor: 'pointer' }}
                 >
                     अब लॉगिन करें
                 </button>
             )}
-            
+
             {status.includes('त्रुटि') && (
-                 <button 
+                <button
                     onClick={() => navigate('/register')}
                     style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', cursor: 'pointer' }}
                 >

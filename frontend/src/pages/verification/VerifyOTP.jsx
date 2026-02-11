@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { verifyOTP } from '../../api/allApi';
 import gmailImg from "../../assets/Gmail.png";
 
@@ -8,7 +8,7 @@ const VerifyOTP = () => {
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -29,9 +29,9 @@ const VerifyOTP = () => {
         setError('');
         try {
             // 📝 Backend ko otp ke saath activationToken bhi bhej rahe hain
-            const response = await verifyOTP({ 
-                otp, 
-                activationToken 
+            const response = await verifyOTP({
+                otp,
+                activationToken
             });
 
             if (response.success) {
@@ -52,16 +52,17 @@ const VerifyOTP = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-white px-4">
             <div className="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center">
-                
+
                 {/* 1. Image Section - Top on Mobile */}
                 <div className="flex justify-center md:order-1">
-                    <motion.img
+                    {/* <motion.img
                         src={gmailImg}
                         alt="Email Verification"
                         className="w-[280px] md:w-[400px] mt-4"
                         animate={{ y: [0, -15, 0] }}
                         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                    />
+                    /> */}
+                    <img src={gmailImg} alt="Email Verification" className="w-[280px] md:w-[400px] mt-4" />
                 </div>
 
                 {/* 2. Content Section */}
@@ -71,7 +72,7 @@ const VerifyOTP = () => {
                     </h1>
 
                     <p className="text-gray-600 mb-6 leading-relaxed">
-                        We’ve sent a 6-digit verification code to your email address. 
+                        We’ve sent a 6-digit verification code to your email address.
                         Please enter the code below to activate your account.
                     </p>
 
@@ -80,13 +81,11 @@ const VerifyOTP = () => {
                     </div>
 
                     {error && (
-                        <motion.div 
-                            initial={{ opacity: 0, x: -10 }} 
-                            animate={{ opacity: 1, x: 0 }}
+                        <div
                             className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-100"
                         >
                             {error}
-                        </motion.div>
+                        </div>
                     )}
 
                     <form onSubmit={handleVerify} className="space-y-6">
@@ -103,11 +102,10 @@ const VerifyOTP = () => {
                         <button
                             type="submit"
                             disabled={loading || otp.length !== 6}
-                            className={`w-full py-4 rounded-xl font-bold text-white text-lg transition-all shadow-md ${
-                                loading || otp.length !== 6 
-                                ? 'bg-indigo-300 cursor-not-allowed' 
-                                : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
-                            }`}
+                            className={`w-full py-4 rounded-xl font-bold text-white text-lg transition-all shadow-md ${loading || otp.length !== 6
+                                    ? 'bg-indigo-300 cursor-not-allowed'
+                                    : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
+                                }`}
                         >
                             {loading ? 'Verifying...' : 'Verify OTP'}
                         </button>
@@ -121,7 +119,7 @@ const VerifyOTP = () => {
                         <p className="text-sm text-gray-500">
                             Didn't receive the code? <button className="text-indigo-600 font-bold hover:underline">Resend Code</button>
                         </p>
-                        <button 
+                        <button
                             onClick={() => navigate("/register")}
                             className="text-sm text-gray-400 hover:text-indigo-600 text-left w-fit transition"
                         >

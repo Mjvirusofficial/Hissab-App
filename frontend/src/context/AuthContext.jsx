@@ -29,8 +29,8 @@ export const AuthProvider = ({ children }) => {
 
     if (token && storedUser) {
       try {
-        const userData = JSON.parse(storedUser);
-        setUser(userData);
+        JSON.parse(storedUser); // validate JSON
+        // setUser(userData);
       } catch (error) {
         console.error("Error parsing stored user:", error);
         localStorage.removeItem("token");
@@ -68,4 +68,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

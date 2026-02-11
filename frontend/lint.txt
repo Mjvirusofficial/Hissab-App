@@ -1,0 +1,132 @@
+﻿
+> vite-project@0.0.0 lint
+> eslint .
+
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\component\Loading.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\component\Navbar.jsx
+   5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  23:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  21 |       try {
+  22 |         const userData = JSON.parse(storedUser);
+> 23 |         setUser({
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  24 |           name: userData.user?.name || userData.displayName || "User",
+  25 |           email: userData.user?.email || userData.email,
+  26 |           uid: userData.user?.id || userData.uid,  react-hooks/set-state-in-effect
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\component\PageWrapper.jsx
+   2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  34:40  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  32 |     // Use useMemo to pick a random variant only once on mount per instance
+  33 |     const variants = useMemo(() => {
+> 34 |         const randomIndex = Math.floor(Math.random() * variantsList.length);
+     |                                        ^^^^^^^^^^^^^ Cannot call impure function
+  35 |         return variantsList[randomIndex];
+  36 |     }, []);
+  37 |  react-hooks/purity
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\context\AuthContext.jsx
+  33:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  31 |       try {
+  32 |         const userData = JSON.parse(storedUser);
+> 33 |         setUser(userData);
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  34 |       } catch (error) {
+  35 |         console.error("Error parsing stored user:", error);
+  36 |         localStorage.removeItem("token");  react-hooks/set-state-in-effect
+  71:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-refresh/only-export-components
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\About.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Blog.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Contact.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Dashboard.jsx
+   28:10  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+   31:10  error  'isLoadingExpenses' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+   32:10  error  'isLoadingWithoutAmount' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   42:14  error  'error' is defined but never used                                                                       no-unused-vars
+   53:14  error  'err' is defined but never used                                                                         no-unused-vars
+   69:14  error  'error' is defined but never used                                                                       no-unused-vars
+   85:14  error  'error' is defined but never used                                                                       no-unused-vars
+   96:14  error  'error' is defined but never used                                                                       no-unused-vars
+  106:14  error  'error' is defined but never used                                                                       no-unused-vars
+  127:35  error  'Icon' is defined but never used                                                                        no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Home.jsx
+   28:10  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+   31:10  error  'isLoadingExpenses' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+   32:10  error  'isLoadingWithoutAmount' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   42:14  error  'error' is defined but never used                                                                       no-unused-vars
+   53:14  error  'err' is defined but never used                                                                         no-unused-vars
+   69:14  error  'error' is defined but never used                                                                       no-unused-vars
+   85:14  error  'error' is defined but never used                                                                       no-unused-vars
+   96:14  error  'error' is defined but never used                                                                       no-unused-vars
+  106:14  error  'error' is defined but never used                                                                       no-unused-vars
+  127:35  error  'Icon' is defined but never used                                                                        no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Login.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Profile.jsx
+   2:16  error  'storage' is defined but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+   4:10  error  'ref' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                   no-unused-vars
+   4:15  error  'uploadString' is defined but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+   4:29  error  'getDownloadURL' is defined but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+   5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+   6:8   error  'defaultCover' is defined but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  36:10  error  'cover' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  37:10  error  'avatarFile' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  65:9   error  'handleImage' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Register.jsx
+   4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  70:14  error  'err' is defined but never used                                                no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\Tutorial.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\WithAmount.jsx
+  34:10  error    'error' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                            no-unused-vars
+  36:10  error    'successMessage' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                   no-unused-vars
+  45:6   warning  React Hook useEffect has a missing dependency: 'fetchExpense'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\WithOutAmount.jsx
+   30:10  error  'deletingProductId' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  117:30  error  'Icon' is defined but never used                                                                   no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\verification\CheckEmailLoading.jsx
+  5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\verification\EmailVerification.jsx
+  64:8  warning  React Hook useEffect has a missing dependency: 'verifyAccount'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\MERN\Hissab-App\Hissab-App\frontend\src\pages\verification\VerifyOTP.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+Γ£û 51 problems (49 errors, 2 warnings)
+

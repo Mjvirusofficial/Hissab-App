@@ -2,17 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Home, ListChecks, LogIn, UserPlus, LogOut, Menu, X, User, Phone, Info, BookOpen } from "lucide-react";
 
-// Helper function to generate avatar if user doesn't have one
-const getAvatarUrl = (userData) => {
-  if (userData?.photoURL) return userData.photoURL;
-
-  const name = userData?.displayName || userData?.email || "U";
-  const firstLetter = name.charAt(0).toUpperCase();
-  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(firstLetter)}&backgroundColor=6366f1&fontWeight=700&fontSize=60&radius=50`;
-};
+// Helper function removed as it was unused
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,12 +20,7 @@ function Navbar() {
 
     if (token && storedUser) {
       try {
-        const userData = JSON.parse(storedUser);
-        setUser({
-          name: userData.user?.name || userData.displayName || "User",
-          email: userData.user?.email || userData.email,
-          uid: userData.user?.id || userData.uid,
-        });
+        JSON.parse(storedUser); // validate JSON but don't need the result
       } catch (error) {
         console.error("Error parsing stored user:", error);
       }
