@@ -1,0 +1,10 @@
+[build]
+  # Navigate to the frontend directory to run the build
+  base = "frontend"
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Tell NPM to allow peer dependency conflicts (needed for React 19)
+  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "22"
