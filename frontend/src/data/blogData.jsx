@@ -9,7 +9,7 @@ export const blogPosts = [
         date: "Feb 10, 2026",
         readTime: "5 min read",
         category: "App Reviews",
-        image: "https://images.unsplash.com/photo-1554224155-9ffd4cf4438e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         content: (
             <>
                 <p className="mb-6 text-gray-700 leading-relaxed">
