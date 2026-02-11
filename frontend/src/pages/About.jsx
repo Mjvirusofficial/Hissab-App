@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Twitter, Linkedin, Heart, Instagram } from 'lucide-react';
 import DR from '../assets/DR.png';
+import SEO from '../component/SEO';
 
 const About = () => {
     const [language, setLanguage] = useState('hinglish');
@@ -40,6 +41,11 @@ const About = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <SEO
+                title="About Us"
+                description="Learn about the mission and team behind D-Hisaab, the smart expense tracking app designed to simplify your financial life."
+                url="https://dhisaab.netlify.app/about"
+            />
             <div className="max-w-4xl mx-auto">
                 {/* Language Toggle */}
                 <div className="flex justify-end mb-8">
@@ -49,8 +55,8 @@ const About = () => {
                                 key={lang}
                                 onClick={() => setLanguage(lang)}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all capitalize ${language === lang
-                                        ? 'bg-indigo-600 text-white shadow-md'
-                                        : 'text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-indigo-600 text-white shadow-md'
+                                    : 'text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
                                 {lang}

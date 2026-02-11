@@ -68,10 +68,15 @@ function Footer() {
             </ul>
           </div>
 
-          {/* 3. Legal & Resources */}
+          {/* 3. Resources & Legal */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold text-white mb-4">Legal</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">Resources</h3>
             <ul className="space-y-3">
+              <li>
+                <Link to="/blog" className="text-gray-400 hover:text-white transition text-sm flex items-center">
+                  Blog & Tips <span className="ml-2 text-[10px] bg-indigo-600 text-white px-1.5 rounded">New</span>
+                </Link>
+              </li>
               <li>
                 <Link to="/privacy" className="text-gray-400 hover:text-white transition text-sm">
                   Privacy Policy

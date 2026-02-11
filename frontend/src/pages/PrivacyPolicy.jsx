@@ -1,9 +1,15 @@
 import React from 'react';
 import { Shield, Lock, Eye, FileText, Server } from 'lucide-react';
+import SEO from '../component/SEO';
 
 const PrivacyPolicy = () => {
     return (
         <div className="min-h-screen bg-gray-50 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+            <SEO
+                title="Privacy Policy"
+                description="Read our Privacy Policy to understand how D-Hisaab collects, uses, and protects your personal data."
+                url="https://dhisaab.netlify.app/privacy"
+            />
             <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
 
                 {/* Header Section */}

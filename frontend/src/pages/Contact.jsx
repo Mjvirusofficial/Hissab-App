@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, MessageSquare, User, Phone } from 'lucide-react';
+import SEO from '../component/SEO';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -30,6 +31,11 @@ const Contact = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <SEO
+                title="Contact Us"
+                description="Get in touch with the D-Hisaab team for support, feedback, or inquiries."
+                url="https://dhisaab.netlify.app/contact"
+            />
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

@@ -20,6 +20,8 @@ const Tutorial = lazy(() => import("./pages/Tutorial"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const FAQ = lazy(() => import("./pages/FAQ"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 // Verification Pages
 const EmailVerification = lazy(() => import('./pages/verification/EmailVerification'));
@@ -105,6 +107,8 @@ function App() {
               <Route path="/privacy" element={<PageWrapper><PrivacyPolicy /></PageWrapper>} />
               <Route path="/terms" element={<PageWrapper><TermsOfService /></PageWrapper>} />
               <Route path="/faq" element={<PageWrapper><FAQ /></PageWrapper>} />
+              <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+              <Route path="/blog/:id" element={<PageWrapper><BlogPost /></PageWrapper>} />
 
               {/* Verification Routes */}
               <Route path="/verify-email/:token" element={<PageWrapper><EmailVerification /></PageWrapper>} />

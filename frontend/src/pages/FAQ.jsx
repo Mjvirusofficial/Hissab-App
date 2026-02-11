@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, ChevronUp, MessageCircle, Search } from 'lucide-react';
+import SEO from '../component/SEO';
 
 const FAQData = [
     {
@@ -37,6 +38,11 @@ const FAQ = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+            <SEO
+                title="FAQ"
+                description="Frequently Asked Questions about D-Hisaab features, pricing, and security."
+                url="https://dhisaab.netlify.app/faq"
+            />
             <div className="max-w-3xl mx-auto">
 
                 {/* Header */}

@@ -1,9 +1,15 @@
 import React from 'react';
 import { FileCheck, Smartphone, AlertTriangle, Scale, Ban } from 'lucide-react';
+import SEO from '../component/SEO';
 
 const TermsOfService = () => {
     return (
         <div className="min-h-screen bg-gray-50 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+            <SEO
+                title="Terms of Service"
+                description="Read our Terms of Service to understand the rules and regulations for using D-Hisaab."
+                url="https://dhisaab.netlify.app/terms"
+            />
             <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
 
                 {/* Header Section */}
