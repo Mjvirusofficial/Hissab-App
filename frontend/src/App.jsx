@@ -29,6 +29,9 @@ const EmailVerification = lazy(() => import('./pages/verification/EmailVerificat
 const CheckEmailLoading = lazy(() => import('./pages/verification/CheckEmailLoading'));
 const VerifyOTP = lazy(() => import('./pages/verification/VerifyOTP'));
 
+// Admin Pages
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+
 // 🔒 Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -117,12 +120,22 @@ function App() {
               <Route path="/check-email" element={<PageWrapper><CheckEmailLoading /></PageWrapper>} />
               <Route path="/verify-otp" element={<PageWrapper><VerifyOTP /></PageWrapper>} />
 
+              {/* Admin Route */}
+              <Route path="/admin/dashboard" element={
+                <ProtectedRoute>
+                  <PageWrapper>
+                    <AdminDashboard />
+                  </PageWrapper>
+                </ProtectedRoute>
+              } />
+
               {/* Temporary Loading Demo Route */}
               <Route path="/test-loading" element={<Loading />} />
 
-              {/* 404 Redirect */}
-              <Route path="*" element={<Navigate to="/" replace />} />
               <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
+
+              {/* 404 Redirect (Always Keep at the End) */}
+              <Route path="*" element={<Navigate to="/" replace />} />
 
             </Routes>
           </AnimatePresence>

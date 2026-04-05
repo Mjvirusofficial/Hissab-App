@@ -7,6 +7,7 @@ const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const withoutAmountRoutes = require("./routes/withoutAmountRoutes");
+const adminRoutes = require('./routes/adminRoutes'); // <-- Added Admin Routes
 
 // Connect to Database
 connectDB();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use("/withoutAmount", withoutAmountRoutes);
+app.use('/admin', adminRoutes); // <-- Added Admin Route registration
 
 // Basic route
 app.get('/', (req, res) => {

@@ -107,6 +107,7 @@ const verifyOTP = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role,
                 token: generateToken({ id: user._id })
             }
         });
@@ -129,6 +130,7 @@ const loginUser = async (req, res) => {
                     _id: user._id,
                     name: user.name,
                     email: user.email,
+                    role: user.role, // <-- Added role
                     token: generateToken({ id: user._id }),
                 },
             });
@@ -197,6 +199,7 @@ const loginWithGoogle = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role, // <-- Added role
                 token: generateToken({ id: user._id })
             }
         });
