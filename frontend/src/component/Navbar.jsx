@@ -17,7 +17,8 @@ import {
   LogOut,
   Bell,
   TrendingUp,
-  FileText
+  FileText,
+  ShieldAlert
 } from "lucide-react";
 
 function Navbar() {
@@ -36,6 +37,7 @@ function Navbar() {
           setUser({
             name: data.user?.name || data.displayName || "User",
             email: data.user?.email || data.email,
+            role: data.user?.role || data.role || "user"
           });
         } catch (e) {}
       } else {
@@ -145,7 +147,7 @@ function Navbar() {
 
       {/* --- FULL-WIDTH TOP-ROUNDED BOTTOM NAVIGATION (Responsive for All Screens) --- */}
       {user && (
-        <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[2.5rem] md:rounded-t-[3rem] h-17 md:h-20 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] border-t-4 transition-all duration-500 pb-1 md:pb-2 ${activeBorderColor}`}>
+        <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[1.5rem] md:rounded-t-[3rem] h-17 md:h-20 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] border-t-4 transition-all duration-500 pb-1 md:pb-2 ${activeBorderColor}`}>
           <div className="w-full h-full flex items-center justify-around px-2 md:px-10 max-w-7xl mx-auto">
             {tabs.map(tab => {
               const active = tab.id === activeTabId;
@@ -185,6 +187,15 @@ function Navbar() {
                </div>
                
                <div className="flex-grow p-6 overflow-y-auto space-y-4">
+                  {user?.role === 'admin' && (
+                    <Link to="/admin/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between p-4 bg-indigo-50 border border-indigo-100 rounded-2xl group transition-all mb-6">
+                      <div className="flex items-center space-x-4">
+                        <ShieldAlert size={20} className="text-indigo-600" />
+                        <span className="font-bold text-indigo-900">Admin Dashboard</span>
+                      </div>
+                      <ChevronRight size={18} className="text-indigo-400 group-hover:translate-x-1 transition-all" />
+                    </Link>
+                  )}
                   <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-2">Support & Info</p>
                   {[
                     { icon: BookOpen, title: "How to use", path: "/tutorial" },

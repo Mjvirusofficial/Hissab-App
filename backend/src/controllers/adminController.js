@@ -127,9 +127,31 @@ const createUser = async (req, res) => {
     }
 };
 
+const getUserActivity = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const [expenses, withoutAmount] = await Promise.all([
+            Expense.find({ userId }).sort({ createdAt: -1 }),
+            WithoutAmountExpense.find({ userId }).sort({ createdAt: -1 })
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                expenses,
+                withoutAmount
+            }
+        });
+    } catch (error) {
+        console.error("Admin Get Activity Error:", error.message);
+        res.status(500).json({ success: false, message: 'Server Error Fetching Activity' });
+    }
+};
+
 module.exports = {
     getAdminStats,
     getAllUsers,
     createUser,
-    deleteUser
+    deleteUser,
+    getUserActivity
 };

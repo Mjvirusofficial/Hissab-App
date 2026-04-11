@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Users, CreditCard, Wallet, Trash2, ShieldAlert, UserPlus, X } from 'lucide-react';
+import { Users, CreditCard, Wallet, Trash2, ShieldAlert, UserPlus, X, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -11,6 +11,9 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [userActivity, setUserActivity] = useState(null);
+    const [activityLoading, setActivityLoading] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -87,6 +90,23 @@ const AdminDashboard = () => {
             alert(err.response?.data?.message || 'Failed to create user');
         } finally {
             setFormLoading(false);
+        }
+    };
+
+    const handleViewActivity = async (user) => {
+        setSelectedUser(user);
+        setActivityLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`${API_URL}/admin/users/${user._id}/activity`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUserActivity(res.data.data);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to fetch user activity');
+        } finally {
+            setActivityLoading(false);
         }
     };
 
@@ -239,7 +259,14 @@ const AdminDashboard = () => {
                                         {user.withoutAmountCount || 0}
                                     </td>
                                     <td className="px-6 py-4">{new Date(user.createdAt).toLocaleDateString()}</td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-6 py-4 text-right flex justify-end gap-2">
+                                        <button
+                                            onClick={() => handleViewActivity(user)}
+                                            className="p-2 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                            title="View User Activity"
+                                        >
+                                            <Eye size={18} />
+                                        </button>
                                         <button
                                             onClick={() => handleDeleteUser(user._id, user.name)}
                                             disabled={user.role === 'admin'}
@@ -259,6 +286,77 @@ const AdminDashboard = () => {
                     </table>
                 </div>
             </div>
+
+            {/* User Activity Modal */}
+            {selectedUser && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b flex justify-between items-center bg-gray-50">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-800">Activity for {selectedUser.name}</h2>
+                                <p className="text-sm text-gray-500">{selectedUser.email}</p>
+                            </div>
+                            <button onClick={() => { setSelectedUser(null); setUserActivity(null); }} className="text-gray-500 hover:text-gray-800 transition-colors">
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="p-6 overflow-y-auto">
+                            {activityLoading ? (
+                                <div className="text-center py-20">Loading activity...</div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Budgeted Expenses */}
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-4 text-indigo-600 flex items-center gap-2">
+                                            <TrendingUp size={20} /> Budgeted Logs ({userActivity?.expenses?.length || 0})
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {userActivity?.expenses?.map(exp => (
+                                                <div key={exp._id} className="p-3 border rounded-xl bg-gray-50">
+                                                    <div className="flex justify-between font-bold">
+                                                        <span>{exp.name}</span>
+                                                        <span className="text-indigo-600">₹{exp.totalAmount}</span>
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 mt-1">
+                                                        {exp.products?.length || 0} items | {new Date(exp.createdAt).toLocaleDateString()}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {!userActivity?.expenses?.length && <p className="text-gray-400 text-sm">No budgeted logs found.</p>}
+                                        </div>
+                                    </div>
+
+                                    {/* Daily Expenses */}
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-4 text-lime-600 flex items-center gap-2">
+                                            <FileText size={20} /> Daily Logs ({userActivity?.withoutAmount?.length || 0})
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {userActivity?.withoutAmount?.map(exp => (
+                                                <div key={exp._id} className="p-3 border rounded-xl bg-gray-50">
+                                                    <div className="flex justify-between font-bold">
+                                                        <span>{exp.name}</span>
+                                                        <span className="text-lime-600">
+                                                            ₹{exp.products?.reduce((sum, p) => sum + p.amount, 0) || 0}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 mt-1">
+                                                        {exp.products?.length || 0} items | {new Date(exp.createdAt).toLocaleDateString()}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {!userActivity?.withoutAmount?.length && <p className="text-gray-400 text-sm">No daily logs found.</p>}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-6 border-t bg-gray-50 flex justify-end">
+                            <button onClick={() => { setSelectedUser(null); setUserActivity(null); }} className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-xl font-bold transition-all">Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

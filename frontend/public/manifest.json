@@ -1,7 +1,6 @@
 {
-  "name": "Hisaab",
-  "short_name": "Hisaab",
-  "name": "D-Hisaab - Smart Expense Tracker",
+  "name": "D-Hisaab",
+  "short_name": "D-Hisaab",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
