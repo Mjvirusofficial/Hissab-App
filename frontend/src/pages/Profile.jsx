@@ -189,22 +189,52 @@ const Profile = () => {
           </button>
         </div>
 
-        {/* SECURITY */}
-        <div className="bg-white mt-6 rounded-xl shadow p-6 max-w-md">
-          <h3 className="font-semibold mb-3">Security</h3>
-          <input
-            type="password"
-            placeholder="New password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded-lg p-2 mb-3"
-          />
-          <button
-            onClick={changePassword}
-            className="bg-gray-800 text-white px-4 py-2 rounded-lg"
-          >
-            Change Password
-          </button>
+        {/* SETTINGS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pb-24 h-full">
+          {/* REGION / CURRENCY */}
+          <div className="bg-white rounded-xl shadow p-6">
+            <h3 className="font-semibold mb-3">Region & Currency</h3>
+            <p className="text-xs text-gray-500 mb-3">Update your country to set the default currency for all budgets and expenses.</p>
+            <select
+              defaultValue={localStorage.getItem('user_currency') || '₹'}
+              onChange={(e) => {
+                const sel = e.target.options[e.target.selectedIndex];
+                localStorage.setItem('user_currency', e.target.value);
+                localStorage.setItem('user_country', sel.getAttribute('data-name'));
+                window.location.reload();
+              }}
+              className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+            >
+              <option value="₹" data-name="India">🇮🇳 India (₹)</option>
+              <option value="$" data-name="United States">🇺🇸 United States ($)</option>
+              <option value="£" data-name="United Kingdom">🇬🇧 United Kingdom (£)</option>
+              <option value="€" data-name="Europe">🇪🇺 Europe (€)</option>
+              <option value="د.إ" data-name="UAE">🇦🇪 UAE (د.إ)</option>
+              <option value="Rs" data-name="Pakistan">🇵🇰 Pakistan (Rs)</option>
+              <option value="৳" data-name="Bangladesh">🇧🇩 Bangladesh (৳)</option>
+              <option value="रु" data-name="Nepal">🇳🇵 Nepal (रु)</option>
+            </select>
+            <p className="text-[10px] text-indigo-500 mt-4 font-semibold uppercase tracking-wider">* Page will auto-reload to apply changes</p>
+          </div>
+
+          {/* SECURITY */}
+          <div className="bg-white rounded-xl shadow p-6">
+            <h3 className="font-semibold mb-3">Security</h3>
+            <p className="text-xs text-gray-500 mb-3">Update your account password securely.</p>
+            <input
+              type="password"
+              placeholder="New password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all mb-4"
+            />
+            <button
+              onClick={changePassword}
+              className="w-full bg-gray-900 border border-transparent text-white font-bold px-4 py-3 rounded-xl hover:bg-gray-800 active:scale-95 transition-all shadow-md"
+            >
+              Change Password
+            </button>
+          </div>
         </div>
 
         {msg && <p className="mt-4 text-sm font-medium text-indigo-600">{msg}</p>}

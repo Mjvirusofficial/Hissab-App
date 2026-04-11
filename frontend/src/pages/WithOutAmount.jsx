@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 // 💡 Lucide Icons
 import { ChevronLeft, Plus, BarChart3, Package, Calendar, TrendingUp, Trash2, Loader2, Clock, ScrollText, Printer } from 'lucide-react';
 
-const RupeeSymbol = "₹";
+const RupeeSymbol = localStorage.getItem('user_currency') || "₹";
 
 const formatProductName = (name) => {
   if (!name) return '';
@@ -100,7 +100,7 @@ function WithoutAmount() {
 
   const getHighestExpense = () => {
     const products = expense?.products || [];
-    if (products.length === 0) return '₹0';
+    if (products.length === 0) return `${RupeeSymbol}0`;
     const highest = Math.max(...products.map(p => p.amount));
     return `${RupeeSymbol}${highest.toLocaleString('en-IN')}`;
   };

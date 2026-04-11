@@ -15,7 +15,7 @@ import {
 import img1 from '../assets/imgv2.mp4'
 import img2 from '../assets/imgv.mp4'
 
-const RupeeSymbol = "₹";
+const RupeeSymbol = localStorage.getItem('user_currency') || "₹";
 
 const formatProductName = (name) => {
   if (!name) return '';

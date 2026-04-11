@@ -71,17 +71,18 @@ const Loading = () => {
                         }}
                         className="relative z-10 bg-white p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/50 backdrop-blur-sm"
                     >
-                        <motion.img
-                            src="/hisaabLogo.png"
-                            alt="D-Hisaab Logo"
-                            className="w-20 h-20 object-contain"
+                        <motion.div
+                            className="w-20 h-20 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-3xl flex items-center justify-center shadow-lg shadow-indigo-200"
                             animate={{ y: [0, -8, 0] }}
                             transition={{
                                 duration: 2,
                                 repeat: Infinity,
                                 ease: "easeInOut"
                             }}
-                        />
+                        >
+                            <span className="text-white font-black text-5xl italic drop-shadow-md">D</span>
+                        </motion.div>
+
                     </motion.div>
                 </div>
 

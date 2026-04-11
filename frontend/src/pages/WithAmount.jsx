@@ -11,7 +11,7 @@ import {
 // 💡 Lucide Icons
 import { ChevronLeft, Plus, Trash2, Loader2, BarChart3, Calendar, Tag, AlertTriangle, CheckCircle, Package, Printer } from 'lucide-react';
 
-const RupeeSymbol = "₹";
+const RupeeSymbol = localStorage.getItem('user_currency') || "₹";
 
 const formatProductName = (name) => {
   if (!name) return '';

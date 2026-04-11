@@ -20,7 +20,7 @@ function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-extrabold text-xl leading-none pt-0.5">₹</span>
+                <span className="text-white font-extrabold text-xl leading-none pt-0.5">{localStorage.getItem('user_currency') || '₹'}</span>
               </div>
               <span className="text-2xl font-extrabold text-white">D-Hisaab</span>
             </Link>

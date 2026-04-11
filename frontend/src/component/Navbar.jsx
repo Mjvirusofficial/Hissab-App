@@ -123,7 +123,7 @@ function Navbar() {
         className="fixed top-3 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-7xl z-50 h-16 md:h-20 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl flex items-center justify-between px-5 md:px-8 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
       >
         <Link to="/" onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-100 group-hover:rotate-12 transition-transform duration-300 italic">₹</div>
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-100 group-hover:rotate-12 transition-transform duration-300 italic">{localStorage.getItem('user_currency') || '₹'}</div>
             <div className="flex flex-col leading-none">
               <span className="text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-indigo-600 tracking-tight">D-Hisaab</span>
               <span className="text-[9px] font-medium text-gray-500 pl-0.5 mt-0.5 tracking-wide">Simple, Secure, Smart Accounting :)</span>
