@@ -18,11 +18,11 @@ function Footer() {
 
           {/* 1. Brand Section */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center space-x-2 mb-3">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-extrabold text-xl leading-none pt-0.5">{localStorage.getItem('user_currency') || '₹'}</span>
+            <Link to="/" className="flex items-center space-x-2 mb-3 group">
+              <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-[10px] flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                <span className="text-white font-black text-2xl italic drop-shadow-sm leading-none pl-0.5">D</span>
               </div>
-              <span className="text-2xl font-extrabold text-white">D-Hisaab</span>
+              <span className="text-2xl font-extrabold text-white">Hisaab</span>
             </Link>
             <p className="text-sm text-gray-400 mt-2">
               Simple. Secure. Smart Accounting.

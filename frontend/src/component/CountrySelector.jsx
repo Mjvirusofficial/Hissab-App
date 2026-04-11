@@ -52,7 +52,7 @@ function CountrySelector({ onComplete }) {
 
           <div className="relative z-10 flex flex-col items-center text-center">
             {/* Logo */}
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-lg shadow-indigo-100 mb-4 transform -rotate-6 transition-all duration-300">
+            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-lg shadow-indigo-100 mb-4 transition-all duration-300">
               {selected.currency}
             </div>
             
