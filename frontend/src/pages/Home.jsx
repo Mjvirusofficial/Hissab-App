@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { TrendingUp, FileText, Trash2, Eye, DollarSign, Calendar, Package, Zap } from 'lucide-react';
 import SEO from "../component/SEO";
 import {
@@ -35,7 +35,6 @@ const calculateTotalSpent = (expense) => {
 };
 
 // --- UI COMPONENTS ---
-// eslint-disable-next-line no-unused-vars
 const TabButton = ({ tab, icon: Icon, colorClass, mainText, subText, activeTab, setActiveTab }) => (
   <button
     className={`flex items-center justify-center flex-1 px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${activeTab === tab
@@ -66,42 +65,6 @@ const FormContainer = ({ children, isLeft, color, activeTab }) => (
     </div>
   </div>
 );
-
-const HistoryCard = ({ expense, isBudgeted, handleDelete, navigateTo }) => {
-  const spent = calculateTotalSpent(expense);
-  const cardBorder = isBudgeted ? 'border-indigo-500' : 'border-lime-500';
-
-  return (
-    <div className={`bg-white rounded-xl shadow-md p-3 md:p-5 border-l-4 ${cardBorder} min-w-[210px] md:min-w-[300px] w-[210px] md:w-[300px] flex-shrink-0 transition-all`}>
-      <div className="flex justify-between items-start mb-2">
-        <h4 className="text-[11px] md:text-lg font-bold text-gray-800 truncate">{formatProductName(expense.name) || 'Untitled Log'}</h4>
-        <button onClick={() => handleDelete(expense._id)} className="text-red-500 p-1 bg-red-50 rounded-full"><Trash2 size={12} /></button>
-      </div>
-      <div className="space-y-1.5 pt-2 border-t border-gray-50">
-        {isBudgeted && (
-          <div className="flex justify-between items-center text-[10px] md:text-sm">
-            <span className="text-indigo-600 flex items-center"><DollarSign size={12} /> Budget:</span>
-            <span className="font-bold text-indigo-700">{RupeeSymbol}{expense.totalAmount?.toLocaleString('en-IN')}</span>
-          </div>
-        )}
-        <div className="flex justify-between items-center text-[10px] md:text-sm">
-          <span className={`${isBudgeted ? 'text-indigo-600' : 'text-lime-700'} flex items-center`}><DollarSign size={12} /> Spent:</span>
-          <span className="font-bold">{RupeeSymbol}{spent.toLocaleString('en-IN')}</span>
-        </div>
-        <div className="flex justify-between items-center text-[9px] md:text-xs text-gray-400">
-          <span><Package size={10} className="inline mr-1" />{expense.products?.length || 0} items</span>
-          <span><Calendar size={10} className="inline mr-1" />{formatDate(expense.createdAt)}</span>
-        </div>
-        <button onClick={() => navigateTo && window.location.assign(navigateTo) /* or simple navigate wrapper */} className={`w-full ${isBudgeted ? 'bg-indigo-600' : 'bg-lime-500'} text-white py-1.5 rounded-lg text-[10px] md:text-sm mt-1 flex items-center justify-center font-medium`}><Eye size={12} className="mr-1.5" /> View</button>
-      </div>
-    </div>
-  );
-};
-// Note: In HistoryCard above I replaced onClick navigate to simple wrapper or I should pass navigate function.
-// Actually `HistoryCard` was receiving `navigateTo` string in original code, but `button onClick={() => navigate(navigateTo)}`.
-// I should pass `navigate` function or `onView` callback.
-// Original: <button onClick={() => navigate(navigateTo)}
-// Let's modify HistoryCard to take `onView` callback instead of `navigateTo` string and direct navigate call.
 
 const HistoryCardRevised = ({ expense, isBudgeted, handleDelete, onView }) => {
   const spent = calculateTotalSpent(expense);
@@ -134,40 +97,45 @@ const HistoryCardRevised = ({ expense, isBudgeted, handleDelete, onView }) => {
   );
 };
 
-
 function Home() {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [expenses, setExpenses] = useState([]);
   const [withoutAmountExpenses, setWithoutAmountExpenses] = useState([]);
-
   const [activeTab, setActiveTab] = useState("withAmount");
 
+  // Sync tab with URL query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab === 'daily') {
+      setActiveTab("withoutAmount");
+    } else if (tab === 'budget') {
+      setActiveTab("withAmount");
+    }
+  }, [location.search]);
+
   const fetchExpenses = async () => {
-    // setIsLoadingExpenses(true);
     try {
       const response = await getAllExpenses();
       if (response && response.success && Array.isArray(response.data)) {
         setExpenses(response.data);
       } else { setExpenses([]); }
     } catch { setExpenses([]); }
-    // finally { setIsLoadingExpenses(false); }
   };
 
   const fetchWithoutAmountExpenses = async () => {
-    // setIsLoadingWithoutAmount(true);
     try {
       const result = await getAllWithoutAmountExpenses();
       if (result && result.success && Array.isArray(result.data)) {
         setWithoutAmountExpenses(result.data);
       } else { setWithoutAmountExpenses([]); }
     } catch { setWithoutAmountExpenses([]); }
-    // finally { setIsLoadingWithoutAmount(false); }
   };
 
   const onSubmitWithAmount = async (data) => {
-    // setLoading(true);
     try {
       const response = await createExpense({ name: data.name, totalAmount: Number(data.amount) });
       if (response && response.success) {
@@ -179,11 +147,9 @@ function Home() {
         }
       }
     } catch { alert("❌ Creation failed."); }
-    // finally { setLoading(false); }
   };
 
   const onSubmitWithoutAmount = async (data) => {
-    // setLoading(true);
     try {
       const response = await createWithoutAmountExpense({ name: data.name });
       if (response && response.success) {
@@ -195,7 +161,6 @@ function Home() {
         }
       }
     } catch { alert("❌ Creation failed."); }
-    // finally { setLoading(false); }
   };
 
   const handleDeleteExpense = async (expenseId) => {
@@ -218,12 +183,10 @@ function Home() {
     } catch { alert("❌ Failed to delete."); }
   };
 
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     fetchExpenses();
     fetchWithoutAmountExpenses();
   }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-3 md:p-8">

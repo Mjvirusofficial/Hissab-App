@@ -111,7 +111,7 @@ function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="text-center text-sm text-gray-500 pt-4 px-2">
+        <div className="text-center text-sm text-gray-500 pt-4 px-2 mb-10">
           <p>
             &copy; {currentYear} D-Hisaab. All rights reserved.
           </p>
