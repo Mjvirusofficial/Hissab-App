@@ -1,0 +1,18 @@
+{
+  "name": "Hisaab",
+  "short_name": "Hisaab",
+  "name": "D-Hisaab - Smart Expense Tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "description": "Manage your expenses effortlessly with D-Hisaab.",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
