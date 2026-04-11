@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Users, CreditCard, Wallet, Trash2, ShieldAlert, UserPlus, X, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hissab-4ggc.onrender.com';
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);

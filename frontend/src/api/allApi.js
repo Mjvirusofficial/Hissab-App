@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // ==================== AXIOS SETUP ====================
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hissab-4ggc.onrender.com';
 
 const API = axios.create({
   baseURL: API_BASE_URL,
