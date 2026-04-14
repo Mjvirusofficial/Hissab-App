@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { motion } from 'framer-motion';
 
 const Loading = () => {
     return (
@@ -40,6 +40,7 @@ const Loading = () => {
 
                 {/* Logo Container with Ripple Effect */}
                 <div className="relative mb-8">
+
                     {/* Ripples */}
                     {[1, 2, 3].map((index) => (
                         <motion.div
@@ -80,9 +81,16 @@ const Loading = () => {
                                 ease: "easeInOut"
                             }}
                         >
-                            <span className="text-white font-black text-5xl italic drop-shadow-md">D</span>
-                        </motion.div>
+                            {/* ❌ OLD TEXT LOGO (COMMENTED) */}
+                            {/* <span className="text-white font-black text-5xl italic drop-shadow-md">D</span> */}
 
+                            {/* ✅ NEW IMAGE LOGO (FROM PUBLIC FOLDER) */}
+                            <img
+                                src="/Logo.png"
+                                alt="logo"
+                                className="w-14 h-14 object-contain"
+                            />
+                        </motion.div>
                     </motion.div>
                 </div>
 
@@ -118,7 +126,7 @@ const Loading = () => {
                 </motion.div>
             </div>
 
-            {/* Bottom Progress Line (Optional, decorative) */}
+            {/* Bottom Progress Line */}
             <div className='absolute bottom-0 left-0 right-0 h-1 bg-gray-100'>
                 <motion.div
                     className='h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500'
