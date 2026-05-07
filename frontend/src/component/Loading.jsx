@@ -3,128 +3,128 @@ import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 
 const Loading = () => {
     return (
-        <div className="fixed inset-0 min-h-screen z-50 flex flex-col items-center justify-center bg-gray-50/90 backdrop-blur-md overflow-hidden">
+        <div className="fixed inset-0 min-h-screen z-[9999] flex flex-col items-center justify-center bg-[#fcfdfe] overflow-hidden font-sans">
 
-            {/* Background Animated Blobs */}
+            {/* --- PREMIUM DYNAMIC BACKGROUND --- */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
                     animate={{
-                        x: [0, 100, -100, 0],
-                        y: [0, -100, 100, 0],
-                        scale: [1, 1.2, 0.8, 1],
+                        x: [0, 80, -80, 0],
+                        y: [0, -60, 60, 0],
+                        scale: [1, 1.2, 0.9, 1],
                     }}
-                    transition={{
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-300/20 rounded-full blur-[100px]"
+                    transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[-5%] left-[-5%] w-[500px] h-[500px] bg-indigo-100/50 rounded-full blur-[100px]"
                 />
                 <motion.div
                     animate={{
-                        x: [0, -150, 150, 0],
-                        y: [0, 150, -150, 0],
+                        x: [0, -100, 100, 0],
+                        y: [0, 80, -80, 0],
                         scale: [1, 0.9, 1.1, 1],
                     }}
-                    transition={{
-                        duration: 25,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-300/20 rounded-full blur-[100px]"
+                    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute bottom-[-5%] right-[-5%] w-[500px] h-[500px] bg-purple-100/50 rounded-full blur-[100px]"
                 />
             </div>
 
-            {/* Main Content */}
+            {/* --- CENTRAL CONTENT --- */}
             <div className="relative z-10 flex flex-col items-center">
 
-                {/* Logo Container with Ripple Effect */}
-                <div className="relative mb-8">
-                    {/* Ripples */}
-                    {[1, 2, 3].map((index) => (
+                {/* Logo Section */}
+                <div className="relative mb-12">
+                    {/* Soft Shadow Base */}
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-24 h-4 bg-indigo-900/10 blur-xl rounded-full" />
+
+                    {/* Main Logo Container (Squircle Shape) */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+                        animate={{
+                            opacity: 1,
+                            scale: 1,
+                            rotate: 0,
+                            y: [0, -10, 0]
+                        }}
+                        transition={{
+                            opacity: { duration: 0.5 },
+                            scale: { type: "spring", stiffness: 260, damping: 20 },
+                            y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                        className="relative z-10 w-32 h-32 rounded-[2.5rem] shadow-[0_20px_40px_rgba(79,70,229,0.15)] overflow-hidden border border-white/80 flex items-center justify-center"
+                    >
+                        <div className="absolute inset-0 overflow-hidden bg-indigo-600">
+                            <img
+                                src="/Logo.jpeg"
+                                alt="D-Hisaab Logo"
+                                className="w-full h-full object-cover scale-[1.18]"
+                            />
+                        </div>
+
+                        {/* Shimmer overlay */}
                         <motion.div
-                            key={index}
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ left: ['-100%', '200%'] }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 pointer-events-none"
+                        />
+                    </motion.div>
+
+                    {/* Ripples */}
+                    {[1, 2].map((i) => (
+                        <motion.div
+                            key={i}
                             animate={{
-                                opacity: [0, 0.3, 0],
-                                scale: [0.8, 1.5, 2]
+                                scale: [1, 1.8],
+                                opacity: [0.3, 0]
                             }}
                             transition={{
                                 duration: 3,
                                 repeat: Infinity,
-                                delay: index * 0.4,
+                                delay: i * 1,
                                 ease: "easeOut"
                             }}
-                            className="absolute inset-0 bg-indigo-400/20 rounded-full z-0"
+                            className="absolute inset-0 border-2 border-indigo-200 rounded-[2.5rem] -z-10"
                         />
                     ))}
-
-                    {/* Logo Box */}
-                    <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 260,
-                            damping: 20,
-                            duration: 1.5
-                        }}
-                        className="relative z-10 bg-white p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/50 backdrop-blur-sm"
-                    >
-                        <motion.div
-                            className="w-20 h-20 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-3xl flex items-center justify-center shadow-lg shadow-indigo-200"
-                            animate={{ y: [0, -8, 0] }}
-                            transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                        >
-                            <span className="text-white font-black text-5xl italic drop-shadow-md">D</span>
-                        </motion.div>
-
-                    </motion.div>
                 </div>
 
-                {/* Text Animation */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="flex flex-col items-center gap-3"
-                >
-                    <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-tight">
-                        D-Hisaab
-                    </h2>
+                {/* Text Branding */}
+                <div className="flex flex-col items-center gap-5">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <h2 className="text-4xl font-black tracking-tight bg-gradient-to-r from-indigo-700 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            D-Hisaab
+                        </h2>
+                    </motion.div>
 
-                    <div className="flex items-center gap-1">
-                        <span className="text-gray-500 font-medium text-sm tracking-widest uppercase">Loading</span>
-                        <div className="flex gap-1 ml-1">
+                    <div className="flex items-center gap-3 py-2 px-6 bg-white/60 backdrop-blur-md rounded-2xl border border-white shadow-sm">
+                        <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-[0.3em]">Loading</span>
+                        <div className="flex gap-1.5">
                             {[0, 1, 2].map((i) => (
                                 <motion.div
                                     key={i}
-                                    animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.2, 1] }}
-                                    transition={{
-                                        duration: 1,
-                                        repeat: Infinity,
-                                        delay: i * 0.2,
-                                        ease: "easeInOut"
-                                    }}
-                                    className="w-1.5 h-1.5 bg-indigo-500 rounded-full"
+                                    animate={{ opacity: [0.4, 1, 0.4], y: [0, -3, 0] }}
+                                    transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                                    className="w-1.5 h-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(79,70,229,0.3)]"
                                 />
                             ))}
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
 
-            {/* Bottom Progress Line (Optional, decorative) */}
-            <div className='absolute bottom-0 left-0 right-0 h-1 bg-gray-100'>
+            {/* --- PROGRESS BAR --- */}
+            <div className="fixed bottom-16 left-1/2 -translate-x-1/2 w-56 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                 <motion.div
-                    className='h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500'
-                    animate={{ width: ["0%", "100%"], x: ["-100%", "100%"] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                    animate={{ width: ["0%", "100%"] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
+            </div>
+
+            <div className="fixed bottom-8 text-[10px] font-bold text-gray-400 tracking-[0.5em] uppercase opacity-60">
+                Syncing your finances
             </div>
 
         </div>

@@ -17,8 +17,11 @@ function CountrySelector({ onComplete }) {
   const [selected, setSelected] = useState(countries[0]);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const forceReset = params.get('reset') === 'true';
+    
     const hasSelected = localStorage.getItem('user_currency');
-    if (!hasSelected) {
+    if (!hasSelected || forceReset) {
       setIsOpen(true);
     } else {
       if (onComplete) onComplete();
@@ -30,6 +33,10 @@ function CountrySelector({ onComplete }) {
     localStorage.setItem('user_currency', selected.currency);
     setIsOpen(false);
     if (onComplete) onComplete();
+    // Remove the reset param if present
+    const url = new URL(window.location);
+    url.searchParams.delete('reset');
+    window.history.replaceState({}, '', url);
     window.location.reload();
   };
 
@@ -40,24 +47,34 @@ function CountrySelector({ onComplete }) {
       <motion.div 
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
-        className="fixed inset-0 bg-gray-900/40 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+        className="fixed inset-0 bg-gray-900/60 backdrop-blur-xl z-[100] flex items-center justify-center p-4"
       >
         <motion.div 
-          initial={{ scale: 0.9, y: 20 }} 
+          initial={{ scale: 0.9, y: 30 }} 
           animate={{ scale: 1, y: 0 }} 
-          className="bg-white max-w-sm w-full rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
+          className="bg-white max-w-sm w-full rounded-[2.5rem] p-8 shadow-[0_30px_60px_rgba(0,0,0,0.2)] relative overflow-hidden border border-white/50"
         >
           {/* Decorative background element */}
-          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-indigo-50 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-indigo-50 rounded-full blur-3xl opacity-50"></div>
 
           <div className="relative z-10 flex flex-col items-center text-center">
-            {/* Logo */}
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-lg shadow-indigo-100 mb-4 transition-all duration-300">
-              {selected.currency}
+            {/* New Premium Logo Image */}
+            <div className="relative mb-6">
+                <div className="absolute -inset-4 bg-indigo-500/10 rounded-full blur-xl" />
+                <div className="relative w-20 h-20 bg-white p-1 rounded-[1.5rem] shadow-xl overflow-hidden border border-gray-50 flex items-center justify-center">
+                    <img 
+                        src="/Logo.jpeg" 
+                        alt="D-Hisaab" 
+                        className="w-full h-full object-cover scale-[1.18]" 
+                    />
+                </div>
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center font-bold shadow-lg border-2 border-white text-sm">
+                    {selected.currency}
+                </div>
             </div>
             
             <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-indigo-600 tracking-tight">D-Hisaab</h1>
-            <p className="text-xs font-semibold text-gray-500 mt-1 mb-8 tracking-wide">Simple, Secure, Smart Accounting :)</p>
+            <p className="text-[10px] font-bold text-gray-400 mt-1 mb-8 tracking-[0.2em] uppercase">Simple • Secure • Smart</p>
 
             <h2 className="text-lg font-bold text-gray-800 mb-2">Welcome! Where are you from?</h2>
             <p className="text-xs text-gray-500 mb-6">Select your region to set your default currency.</p>

@@ -19,8 +19,21 @@ function Footer() {
           {/* 1. Brand Section */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-3 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-[10px] flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                <span className="text-white font-black text-2xl italic drop-shadow-sm leading-none pl-0.5">D</span>
+              <div className="relative group">
+                {/* Glow Effect */}
+                <div className="absolute -inset-1.5 bg-indigo-500/20 rounded-[12px] blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="relative w-10 h-10 bg-white p-0.5 rounded-[12px] shadow-[0_4px_12px_rgba(79,70,229,0.2)] group-hover:scale-110 transition-all duration-300 border border-white/20">
+                  <div className="w-full h-full rounded-[10px] overflow-hidden bg-[#5f5af7]">
+                    <img
+                      src="/D-Only.jpeg"
+                      alt="D"
+                      className="w-full h-full object-cover scale-[1.35]"
+                    />
+                    {/* Glass Shimmer */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent pointer-events-none" />
+                  </div>
+                </div>
               </div>
               <span className="text-2xl font-extrabold text-white">Hisaab</span>
             </Link>
