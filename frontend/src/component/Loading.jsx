@@ -1,10 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { motion } from 'framer-motion';
 
 const Loading = () => {
     return (
         <div className="fixed inset-0 min-h-screen z-[9999] flex flex-col items-center justify-center bg-[#fcfdfe] overflow-hidden font-sans">
-
+            
             {/* --- PREMIUM DYNAMIC BACKGROUND --- */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
@@ -29,38 +29,38 @@ const Loading = () => {
 
             {/* --- CENTRAL CONTENT --- */}
             <div className="relative z-10 flex flex-col items-center">
-
+                
                 {/* Logo Section */}
                 <div className="relative mb-12">
                     {/* Soft Shadow Base */}
                     <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-24 h-4 bg-indigo-900/10 blur-xl rounded-full" />
-
+                    
                     {/* Main Logo Container (Squircle Shape) */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
-                        animate={{
-                            opacity: 1,
-                            scale: 1,
+                        animate={{ 
+                            opacity: 1, 
+                            scale: 1, 
                             rotate: 0,
-                            y: [0, -10, 0]
+                            y: [0, -10, 0] 
                         }}
-                        transition={{
+                        transition={{ 
                             opacity: { duration: 0.5 },
                             scale: { type: "spring", stiffness: 260, damping: 20 },
                             y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
                         }}
-                        className="relative z-10 w-32 h-32 rounded-[2.5rem] shadow-[0_20px_40px_rgba(79,70,229,0.15)] overflow-hidden border border-white/80 flex items-center justify-center"
+                        className="relative z-10 w-32 h-32 bg-white/90 p-1.5 rounded-[2.5rem] shadow-[0_20px_40px_rgba(79,70,229,0.15)] overflow-hidden border border-white flex items-center justify-center"
                     >
-                        <div className="absolute inset-0 overflow-hidden bg-indigo-600">
-                            <img
-                                src="/Logo.jpeg"
-                                alt="D-Hisaab Logo"
-                                className="w-full h-full object-cover scale-[1.18]"
+                        <div className="w-full h-full rounded-[2.1rem] overflow-hidden bg-[#5f5af7]">
+                            <img 
+                                src="/Logo.jpeg" 
+                                alt="D-Hisaab Logo" 
+                                className="w-full h-full object-cover scale-[1.25]" 
                             />
                         </div>
-
+                        
                         {/* Shimmer overlay */}
-                        <motion.div
+                        <motion.div 
                             animate={{ left: ['-100%', '200%'] }}
                             transition={{ duration: 2.5, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }}
                             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 pointer-events-none"
@@ -71,13 +71,13 @@ const Loading = () => {
                     {[1, 2].map((i) => (
                         <motion.div
                             key={i}
-                            animate={{
-                                scale: [1, 1.8],
-                                opacity: [0.3, 0]
+                            animate={{ 
+                                scale: [1, 1.8], 
+                                opacity: [0.3, 0] 
                             }}
-                            transition={{
-                                duration: 3,
-                                repeat: Infinity,
+                            transition={{ 
+                                duration: 3, 
+                                repeat: Infinity, 
                                 delay: i * 1,
                                 ease: "easeOut"
                             }}
@@ -122,7 +122,7 @@ const Loading = () => {
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
             </div>
-
+            
             <div className="fixed bottom-8 text-[10px] font-bold text-gray-400 tracking-[0.5em] uppercase opacity-60">
                 Syncing your finances
             </div>

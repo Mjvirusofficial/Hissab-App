@@ -1,19 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AdBanner from './AdBanner';
-// 💡 Icons updated to include Instagram
-import { Home, ListChecks, Mail, Users, Linkedin, Github, Twitter, Instagram, Heart } from 'lucide-react';
+import { Home, ListChecks, Mail, Users, Linkedin, Github, Instagram, Heart } from 'lucide-react';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
   const creatorName = "Deepak";
 
   return (
-    // Outer Container: Responsive padding added
     <footer className="bg-gray-800 text-white mt-12 border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        {/* Top Section: Grid optimized for Mobile (2 columns) and Desktop (3 columns) */}
+        {/* Top Section */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-b border-gray-700 pb-8 mb-8">
 
           {/* 1. Brand Section */}
@@ -22,13 +20,13 @@ function Footer() {
               <div className="relative group">
                 {/* Glow Effect */}
                 <div className="absolute -inset-1.5 bg-indigo-500/20 rounded-[12px] blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                <div className="relative w-10 h-10 bg-white p-0.5 rounded-[12px] shadow-[0_4px_12px_rgba(79,70,229,0.2)] group-hover:scale-110 transition-all duration-300 border border-white/20">
+                
+                <div className="relative w-10 h-10 bg-white p-[1px] rounded-[12px] shadow-[0_4px_12px_rgba(79,70,229,0.2)] group-hover:scale-110 transition-all duration-300">
                   <div className="w-full h-full rounded-[10px] overflow-hidden bg-[#5f5af7]">
-                    <img
-                      src="/D-Only.jpeg"
-                      alt="D"
-                      className="w-full h-full object-cover scale-[1.35]"
+                    <img 
+                      src="/D-Only.jpeg" 
+                      alt="D" 
+                      className="w-full h-full object-cover scale-[1.35]" 
                     />
                     {/* Glass Shimmer */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent pointer-events-none" />
@@ -37,11 +35,12 @@ function Footer() {
               </div>
               <span className="text-2xl font-extrabold text-white">Hisaab</span>
             </Link>
+
             <p className="text-sm text-gray-400 mt-2">
               Simple. Secure. Smart Accounting.
             </p>
 
-            {/* Social Icons (Slightly larger gap for mobile touch) */}
+            {/* Social Icons */}
             <div className="flex space-x-4 mt-4">
               <a href="https://www.linkedin.com/in/deepak-ravidas-65956a388/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-400 transition">
                 <Linkedin size={20} />
@@ -82,7 +81,7 @@ function Footer() {
             </ul>
           </div>
 
-          {/* 3. Resources & Legal */}
+          {/* 3. Resources */}
           <div className="col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Resources</h3>
             <ul className="space-y-3">
@@ -109,7 +108,7 @@ function Footer() {
             </ul>
           </div>
 
-          {/* 4. Contact Info */}
+          {/* 4. Contact */}
           <div className="col-span-2 md:col-span-1">
             <h3 className="text-lg font-semibold text-white mb-4">Get in Touch</h3>
             <p className="text-gray-400 text-sm">
@@ -117,7 +116,6 @@ function Footer() {
             </p>
             <p className="text-white font-medium mt-2 break-all text-sm">
               hisaab204@gmail.com
-
             </p>
           </div>
 
@@ -125,9 +123,7 @@ function Footer() {
 
         {/* Bottom Section */}
         <div className="text-center text-sm text-gray-500 pt-4 px-2 mb-10">
-          <p>
-            &copy; {currentYear} D-Hisaab. All rights reserved.
-          </p>
+          <p>&copy; {currentYear} D-Hisaab. All rights reserved.</p>
           <div className="mt-1 flex items-center justify-center flex-wrap">
             <span>Designed and Developed by</span>
             <span className="text-indigo-400 font-medium mx-1">{creatorName}</span>
@@ -142,6 +138,7 @@ function Footer() {
           width={320}
           height={50}
         />
+
       </div>
     </footer>
   );
