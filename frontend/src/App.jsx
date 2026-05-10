@@ -7,6 +7,7 @@ import Loading from "./component/Loading";
 import PageWrapper from "./component/PageWrapper";
 import ScrollToTop from "./component/ScrollToTop";
 import CountrySelector from "./component/CountrySelector";
+import PWAInstallPrompt from "./component/PWAInstallPrompt";
 import './index.css';
 
 // Lazy Load Pages
@@ -62,6 +63,7 @@ function App() {
       <CountrySelector />
       <Navbar />
       <ScrollToTop />
+      <PWAInstallPrompt />
 
       {/* Main Content Area */}
       <div className="flex-grow">
